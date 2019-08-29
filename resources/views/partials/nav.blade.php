@@ -164,36 +164,52 @@
                 @endrole
             </ul>
             {{-- Right Side Of Navbar --}}
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto">                 
                 {{-- Authentication Links --}}
                 @auth
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            @if ((Auth::User()->profile) && Auth::user()->profile->avatar_status == 1)
-                                <img src="{{ Auth::user()->profile->avatar }}" alt="{{ Auth::user()->name }}"
-                                     class="user-avatar-nav">
-                            @else
-                                <div class="user-avatar-nav"></div>
-                            @endif
-                            {{ Auth::user()->name }} <span class="caret"></span>
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        Notifications <span class="caret"> <i class="fa fa-bell"></i></span>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        @foreach (auth()->user()->unreadNotifications as $not)
+                        <a class="dropdown-item" style="color: red;" href="{{url('/notification/'.$not->id) }}">
+                            {{$not->data['motive_name']}}
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item {{ Request::is('profile/'.Auth::user()->name, 'profile/'.Auth::user()->name . '/edit') ? 'active' : null }}"
-                               href="{{ url('/profile/'.Auth::user()->name) }}">
-                                {!! trans('titles.profile') !!}
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault();
-                                             document.getElementById('logout-form').submit();">
-                                Cerrar sesión
-                            </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </div>
-                    </li>
+                        @endforeach
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        @if ((Auth::User()->profile) && Auth::user()->profile->avatar_status == 1)
+                        <img src="{{ Auth::user()->profile->avatar }}" alt="{{ Auth::user()->name }}"
+                             class="user-avatar-nav">
+                        @else
+                        <div class="user-avatar-nav"></div>
+                        @endif
+                        {{ Auth::user()->name }} <span class="caret"></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item {{ Request::is('profile/'.Auth::user()->name, 'profile/'.Auth::user()->name . '/edit') ? 'active' : null }}"
+                           href="{{ url('/profile/'.Auth::user()->name) }}">
+                            {!! trans('titles.profile') !!}
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
+                                       document.getElementById('logout-form').submit();">
+                            Cerrar sesión
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
                 @endauth
             </ul>
         </div>
