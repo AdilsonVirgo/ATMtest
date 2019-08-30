@@ -4,79 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Alert;
 use App\Models\Configuration;
-use App\Models\VerticalSignal;
-use App\Models\SignalInventory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use Image;
-use Validator;
 
 class AlertController extends Controller {
 
+    
     public function __construct() {
         $this->middleware('auth');
     }
+   
 
-    public function search(Request $request) {
-        $searchTerm = $request->input('alert_search_box');
-        $searchRules = [
-            'alert_search_box' => 'required',
-        ];
-        $searchMessages = [
-            'alert_search_box.required' => 'Search term is required',
-            'alert_search_box.string' => 'Search term has invalid characters',
-            'alert_search_box.max' => 'Search term has too many characters - 255 allowed',
-        ];
-
-        $validator = Validator::make($request->all(), $searchRules, $searchMessages);
-
-        if ($validator->fails()) {
-            return response()->json([
-                        json_encode($validator),
-                            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-     
-        $alerts = Alert::where('state', 'like', '%' . $searchTerm . '%')
-                ->orWhere('latitude', 'like', '%' . $searchTerm . '%')
-                ->orWhere('longitude', 'like', '%' . $searchTerm . '%')
-                ->orWhere('description', 'like', '%' . $searchTerm . '%');
-
-        $result = [];
-        foreach ($alerts->get() as $alert) {
-            $result[] = [
-                'id' => $alert->id,
-                'creator' => $alert->user->full_name(),
-                'state' => $alert->state,
-                'latitude' => $alert->latitude,
-                'longitude' => $alert->longitude,
-                'description' => $alert->description
-            ];
-        }
-
-        return response()->json([
-                    json_encode($result),
-                        ], Response::HTTP_OK);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index() {
-        $pagintaionEnabled = config('atm_app.enablePagination');
-        $alerts = Alert::select();
-        $alertstotal = Alert::count();
-
-        if ($pagintaionEnabled) {
-            $alerts = $alerts->paginate(config('atm_app.paginateListSize'));
-        }
-
-        //return View('verticalsignals.show-vertical-signals', compact('alerts', 'alertstotal'));
-        return View('alerts.home', compact('alerts', 'alertstotal'));
+        $motives = Motive::all();
+        $statuses = Motive::all();
+        $priorities = Motive::all();
+        $alerts = Alert::all();
+        //return view('alerts.index',['alerts','motives','statuses','priorities']);
+        return view('alerts.index', compact($alerts, 'alerts'));
     }
 
     /**
@@ -85,21 +33,11 @@ class AlertController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        $sinventories = SignalInventory::all();
-        $materials = json_decode(Configuration::where('code', 'material')->first()->values);
-        $fasteners = json_decode(Configuration::where('code', 'fijacion')->first()->values);
-        $normatives = json_decode(Configuration::where('code', 'normativa')->first()->values);
-        $orientations = json_decode(Configuration::where('code', 'direction')->first()->values);
-        $states = json_decode(Configuration::where('code', 'estado')->first()->values);
-
-        return view('alerts.create', compact(
-                'sinventories',
-                'materials',
-                'fasteners',
-                'normatives',
-                'orientations',
-                'states')
-        );
+        $alerts = Alert::all();
+        $priorities = Priority::all();
+        $motives = Motive::all();
+        $statuses = Status::all();
+        return view('alerts.create', compact('alerts', 'priorities', 'statuses', 'motives'));
     }
 
     /**
@@ -109,7 +47,31 @@ class AlertController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        //
+        $provincia = new Alert();
+        $provincia->place = $request->get('place');
+        $provincia->user_id = auth()->user()->id;
+        $provincia->priority_id = $request->get('priority_id');
+        $provincia->status_id = 1; //el id no el nombre  1-pendiente
+        $provincia->motive_id = $request->get('motive_id');
+        $provincia->description = $request->get('description');
+        $retorno = $provincia->save();
+		$user = User::find(auth()->user()->id);	
+				 
+        $details = [ 'greeting' => 'Hi Artisan',
+            'body' => 'This is my first notification ',
+            'thanks' => 'Thank you for us!',
+            'actionText' => 'View My Site',
+            'actionURL' => url('/'),
+            'alert_id' => 101
+        ];
+		$user->notify(new AlertCreatedNotification($details));
+		dd('done');
+        // dd($retorno);
+        if ($retorno) {
+            return redirect()->to(url('/alerts'))->with('status', 'Inserted');
+        } else {
+            return redirect()->to(url('/alerts'))->with('status', 'No Inserted');
+        }
     }
 
     /**
@@ -119,7 +81,8 @@ class AlertController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Alert $alert) {
-        //
+        //$alert = Alerts::find($id);
+        return view('alerts.show', compact($alert, 'alert'));
     }
 
     /**
@@ -129,18 +92,33 @@ class AlertController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit(Alert $alert) {
-        //
+        // $status = Status::find($id);
+        $alerts = Motive::all();
+        $priorities = Priority::all();
+        $motives = Motive::all();
+        $statuses = Status::all();
+        return view('alerts.edit', compact('alert', 'priorities', 'statuses', 'motives'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Alert  $alert
+     * @param  integer $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Alert $alert) {
-        //
+    public function update(Request $request, $id) {
+        $attributes = [
+            'place' => $request->get('place'), 'user_id' => auth()->user()->id,
+            'priority_id' => $request->get('priority_id'), 'status_id' => $request->get('status_id'),
+            'motive_id' => $request->get('motive_id'), 'description' => $request->get('description')
+        ];
+        $retorno = \DB::table('alerts')->where('id', $id)->update($attributes);
+        if ($retorno) {
+            return redirect()->to(url('/alerts'))->with('status', '-' . __('updated'));
+        } else {
+            return redirect()->to(url('/alerts'))->with('status', '-' . __('nope'));
+        }
     }
 
     /**
@@ -151,6 +129,36 @@ class AlertController extends Controller {
      */
     public function destroy(Alert $alert) {
         //
+    }
+    public function completed(Request $request,$id){
+       $retorno =  \DB::table('users')
+                ->where('id', $id)
+                ->update(['completed' => true]);
+       return back();
+    }
+    
+    
+    ///////otros metodos
+    public function reject(Request $request, $id) {       
+        $retorno = \DB::table('alerts')->where('id', $id)->update(['status_id' => 3]);
+        if ($retorno) {
+            return redirect()->to(url('/alerts'))->with('status', '-' . __('rejected'));
+        } else {
+            return redirect()->to(url('/alerts'))->with('status', '-' . __('nope'));
+        }
+    }
+     public function attend(Request $request, $id) {       
+        $retorno = \DB::table('alerts')->where('id', $id)->update(['status_id' => 2]);
+      //  dd($alert_id);//1-true  0-false
+        $alerts = Alert::find($id);
+        $reports = Report::all();
+        if ($retorno) {
+           return view('reports.created', compact('reports', 'alerts'));
+        } else {
+            return redirect()->to(url('/alerts'))->with('status', '-' . __('not possible'));
+        }
+        
+        
     }
 
 }
