@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\WorkOrder;
+use App\Models\Intersection;
+use App\Models\WorkOrder;
 use Illuminate\Http\Request;
 
 class WorkOrderController extends Controller
@@ -14,7 +15,15 @@ class WorkOrderController extends Controller
      */
     public function index()
     {
-        //
+        $pagintaionEnabled = config('atm_app.enablePagination');
+        $intersections = Intersection::select();
+        $intersectionstotal = Intersection::count();
+
+        if ($pagintaionEnabled) {
+            $intersections = $intersections->paginate(config('atm_app.paginateListSize'));
+        }
+
+        return View('workorders/index', compact('intersections', 'intersectionstotal'));
     }
 
     /**
