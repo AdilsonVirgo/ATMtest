@@ -3,6 +3,7 @@
 return [
 
     'app'               => 'Autoridad Municipal de Tránsito',
+    'name'               => 'ATM',
     'app2'              => 'Versión :version',
     'home'              => 'Home',
     'login'             => 'Iniciar sesión',
@@ -18,6 +19,10 @@ return [
     'verticalSignalsDropdownNav'  => 'Gestión de señales',
     'trafficLightsDropdownNav'  => 'Gestión de semáforos',
     'workOrdersDropdownNav'  => 'Órdenes de trabajo',
+    'alertsDropdownNav'  => 'Alertas',
+    'motivesDropdownNav'  => 'Motives',
+    'priorityDropdownNav'  => 'Prioridades',
+    'statusDropdownNav'  => 'Estados',
     'reportsDropdownNav'  => 'Reportes',
 
     'activation'        => 'Registro iniciado | Activación necesaria',
@@ -46,6 +51,10 @@ return [
     'deviceInventory'      => 'Catálogo de dispositivos de tráfico',
     'trafficLights'      => 'Listado de semáforos',
     'ordersList'      => 'Listado de órdenes',
+    'alertsList'      => 'Listado de alertas',
+    'motivesList'      => 'Listado de motivos',
+    'priorityList'      => 'Listado de prioridades',
+    'statusList'      => 'Listado de estados',
     'verticial-signals'      => 'Señales verticales',
     'intersections'     => 'Intersecciones',
     'traffic-poles'     => 'Listado de postes de tráfico',

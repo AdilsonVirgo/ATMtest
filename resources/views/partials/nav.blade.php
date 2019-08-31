@@ -146,6 +146,18 @@
                         </a>
                     </div>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {!! trans('titles.alertsDropdownNav') !!}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item {{ Request::is('alerts', 'alerts/*') ? 'active' : null }}"
+                           href="{{ URL::to('/alerts/') }}">
+                            {!! trans('titles.alertsList') !!}
+                        </a>
+                    </div>
+                </li>
                 @endrole
 
                 @role('atmoperator|atmadmin')

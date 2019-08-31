@@ -15,7 +15,7 @@ class CreateDevicesInventoryTable extends Migration
     {
         Schema::create('devices_inventory', function (Blueprint $table) {
             $table->bigIncrements('id');
-
+            
             $table->string('code', 50)->unique()->nullable();
             $table->string('name');
             $table->string('symbol', 50)->nullable();
