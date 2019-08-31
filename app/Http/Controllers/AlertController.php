@@ -3,28 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alert;
+use App\Models\Motive;
+use App\Models\Status;
+use App\Models\Priority;
+use App\User;
+use App\Models\DevicesInventory;
 use App\Models\Configuration;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use App\Notifications\AlertCreatedNotification;
+use Illuminate\Support\Facades\Validator;
 
 class AlertController extends Controller {
 
-    
     public function __construct() {
         $this->middleware('auth');
     }
-   
 
     public function index() {
-        $motives = Motive::all();
-        $statuses = Motive::all();
-        $priorities = Motive::all();
+        $motives = Motive::all();       
+        $statuses = Status::all();
+        $priorities = Priority::all();
         $alerts = Alert::all();
-        //return view('alerts.index',['alerts','motives','statuses','priorities']);
-        return view('alerts.index', compact($alerts, 'alerts'));
+         $motivestotal = Alert::count();
+        return view('alerts.home', compact('alerts', 'priorities', 'statuses', 'motives','motivestotal'));
     }
 
     /**
@@ -55,17 +64,17 @@ class AlertController extends Controller {
         $provincia->motive_id = $request->get('motive_id');
         $provincia->description = $request->get('description');
         $retorno = $provincia->save();
-		$user = User::find(auth()->user()->id);	
-				 
-        $details = [ 'greeting' => 'Hi Artisan',
+        $user = User::find(auth()->user()->id);
+
+        $details = ['greeting' => 'Hi Artisan',
             'body' => 'This is my first notification ',
             'thanks' => 'Thank you for us!',
             'actionText' => 'View My Site',
             'actionURL' => url('/'),
             'alert_id' => 101
         ];
-		$user->notify(new AlertCreatedNotification($details));
-		dd('done');
+        $user->notify(new AlertCreatedNotification($details));
+        dd('done');
         // dd($retorno);
         if ($retorno) {
             return redirect()->to(url('/alerts'))->with('status', 'Inserted');
@@ -130,16 +139,16 @@ class AlertController extends Controller {
     public function destroy(Alert $alert) {
         //
     }
-    public function completed(Request $request,$id){
-       $retorno =  \DB::table('users')
+
+    public function completed(Request $request, $id) {
+        $retorno = \DB::table('users')
                 ->where('id', $id)
                 ->update(['completed' => true]);
-       return back();
+        return back();
     }
-    
-    
+
     ///////otros metodos
-    public function reject(Request $request, $id) {       
+    public function reject(Request $request, $id) {
         $retorno = \DB::table('alerts')->where('id', $id)->update(['status_id' => 3]);
         if ($retorno) {
             return redirect()->to(url('/alerts'))->with('status', '-' . __('rejected'));
@@ -147,18 +156,17 @@ class AlertController extends Controller {
             return redirect()->to(url('/alerts'))->with('status', '-' . __('nope'));
         }
     }
-     public function attend(Request $request, $id) {       
+
+    public function attend(Request $request, $id) {
         $retorno = \DB::table('alerts')->where('id', $id)->update(['status_id' => 2]);
-      //  dd($alert_id);//1-true  0-false
+        //  dd($alert_id);//1-true  0-false
         $alerts = Alert::find($id);
         $reports = Report::all();
         if ($retorno) {
-           return view('reports.created', compact('reports', 'alerts'));
+            return view('reports.created', compact('reports', 'alerts'));
         } else {
             return redirect()->to(url('/alerts'))->with('status', '-' . __('not possible'));
         }
-        
-        
     }
 
 }

@@ -53,7 +53,6 @@ class IntersectionController extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
         $intersection = Intersection::create([
             'main_st' => $request->input('main_st'),
             'cross_st' => $request->input('cross_st'),
@@ -66,7 +65,6 @@ class IntersectionController extends Controller
         if ($intersection) {
             return redirect('intersections/' . $intersection->id)->with('success', trans('intersections.createSuccess'));
         }
-
         return back()->with('error', trans('Error creando la intersección. Inténtelo de nuevo o contacte al administrador.'));
     }
 

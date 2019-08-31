@@ -191,7 +191,12 @@ Route::group(['middleware' => ['auth', 'activated', 'role:atmadmin', 'activity',
     Route::post('/reports/vertical-signals', 'ReportsController@search')->name('vsignal-filters');
 });
 
- Route::resource('/work-orders', 'WorkOrderController');
- Route::resource('/alerts', 'AlertController');
-  Route::post('search-alerts', 'VerticalSignalController@search')->name('search-alerts');
+Route::resource('/workorders', 'WorkOrderController');
+Route::resource('/alerts', 'AlertController');
+Route::resource('/motives', 'MotiveController');
+Route::resource('/priorities', 'PriorityController');
+Route::resource('/statuses', 'StatusController');
+Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
+Route::post('search-motives', 'MotiveController@search')->name('search-motives');
+Route::post('search-alerts', 'VerticalSignalController@search')->name('search-alerts');
 
