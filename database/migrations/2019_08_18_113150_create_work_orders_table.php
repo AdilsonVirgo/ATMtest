@@ -18,6 +18,10 @@ class CreateWorkOrdersTable extends Migration
             
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+       //     $table->date('report_id');
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
+            $table->boolean('state');
             
             //averia,dano , necesidad reparacion,mantenimiento
             //tipop equipo, senal o semaforo

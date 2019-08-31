@@ -2,16 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Intersection;
-use App\Models\WorkOrder;
+use App\Material;
 use Illuminate\Http\Request;
 
-class WorkOrderController extends Controller
+class MaterialController extends Controller
 {
-     public function __construct()
-    {
-        $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +14,7 @@ class WorkOrderController extends Controller
      */
     public function index()
     {
-
+        //
     }
 
     /**
@@ -46,10 +41,10 @@ class WorkOrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\WorkOrder  $workOrder
+     * @param  \App\Material  $material
      * @return \Illuminate\Http\Response
      */
-    public function show(WorkOrder $workOrder)
+    public function show(Material $material)
     {
         //
     }
@@ -57,10 +52,10 @@ class WorkOrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\WorkOrder  $workOrder
+     * @param  \App\Material  $material
      * @return \Illuminate\Http\Response
      */
-    public function edit(WorkOrder $workOrder)
+    public function edit(Material $material)
     {
         //
     }
@@ -69,10 +64,10 @@ class WorkOrderController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\WorkOrder  $workOrder
+     * @param  \App\Material  $material
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, WorkOrder $workOrder)
+    public function update(Request $request, Material $material)
     {
         //
     }
@@ -80,10 +75,10 @@ class WorkOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\WorkOrder  $workOrder
+     * @param  \App\Material  $material
      * @return \Illuminate\Http\Response
      */
-    public function destroy(WorkOrder $workOrder)
+    public function destroy(Material $material)
     {
         //
     }

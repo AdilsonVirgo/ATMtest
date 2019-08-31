@@ -116,66 +116,48 @@
 
                 <div class="card-body">
 
-                    @if(config('atm_app.enableSearch'))
-                    @include('partials.search-motives-form')
-                    @endif
-                    Cantidad total :{{$motivestotal}}
-                    <div class="row border">
-                        <table class="table table-bordered table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th class="mobilehide">Description</th>                                    
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($motives as $motive) 
-                                <tr>
-                                    <td>{{$motive->id}}</td>
-                                    <td>{{$motive->name}}</td>
-                                    <td class="mobilehide">{{$motive->description}}</td>
-                                    <td><a class="btn btn-sm btn-success showbutton"
-                                           href="{{ URL::to('motives/' . $motive->id) }}"
-                                           data-toggle="tooltip" title="Show">
-                                            {!! trans('motives.buttons.show') !!}
-                                        </a>
-                                        <a class="btn btn-sm btn-info editbutton"
-                                           href="{{ URL::to('motives/' . $motive->id . '/edit') }}"
-                                           data-toggle="tooltip" title="Edit">
-                                            {!! trans('motives.buttons.edit') !!}
-                                        </a>
-                                    </td>
-                                </tr>     
 
-                                @endforeach
-
-                            </tbody>
-                        </table>
-                    </div> <!--fin ROW-->
-
-
+                    <div class="row">
+                        <form method="post" action="{{url('/motives/'.$motive->id )}}">
+                            {{method_field('PATCH')}}
+                            {{ csrf_field() }} 
+                            <div class="container">                                
+                                <div class="row">
+                                    <div>
+                                        Nombre
+                                    </div>
+                                    <input id="name" value="{{$motive->name}}" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" required autofocus>                                                        
+                                    @if ($errors->has('name'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                                    @endif
+                                     <div>
+                                        Description
+                                    </div>
+                                    <input id="description" value="{{$motive->description}}" type="text" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" name="description" autofocus>                                                        
+                                    @if ($errors->has('description'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('description') }}</strong>
+                                    </span>
+                                    @endif
+                                </div> <!--fin ROW-->
+                            </div>
+                            <button class="btn btn-success float-right" type="submit"><i class="fa fa-home"> Guardar Cambios</i></button>
+                           
+                        </form>                 
+                    </div>
                 </div>
+                <!--DELETE ROW-->
+                <form method="post" action="{{url('/motives/'.$motive->id )}}">
+                    {{method_field('DELETE')}}
+                    {{ csrf_field() }} 
+                    <button class="btn btn-danger" type="submit">DELETE BTN</button>
+                </form> 
+
             </div>
         </div>
     </div>
 </div>
-
-@include('modals.modal-delete')
-
-@endsection
-
-@section('footer_scripts')
-@if ((count($motives) > config('atm_app.datatablesJsStartCount')) && config('atm_app.enabledDatatablesJs'))
-@include('scripts.datatables')
-@endif
-@include('scripts.delete-modal-script')
-@include('scripts.save-modal-script')
-@if(config('atm_app.tooltipsEnabled'))
-@include('scripts.tooltips')
-@endif
-@if(config('atm_app.enableSearch'))
-@include('scripts.search-motives')
-@endif
+</div>
 @endsection

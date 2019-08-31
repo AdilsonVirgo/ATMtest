@@ -14,16 +14,14 @@ class CreateAlertsTable extends Migration {
     public function up() {
         Schema::create('alerts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->string('state');
-            $table->decimal('latitude', 11, 8);
-            $table->decimal('longitude', 11, 8);
-            $table->text('google_address')->nullable();
-            $table->string('filename')->nullable() ;
-            $table->string('mime')->nullable() ;
-            $table->string('original_filename')->nullable() ;
-            $table->text('description')->nullable();
+            $table->String('place');
+            $table->unsignedBigInteger('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('priority_id')->references('id')->on('priority');
+            $table->unsignedBigInteger('status_id')->references('id')->on('status');
+            $table->unsignedBigInteger('motive_id')->references('id')->on('motive');
+            $table->text('description');            
+            $table->unsignedBigInteger('device_id')->nullable();
+            $table->boolean('completed')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
