@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\WorkOrder;
+use App\Models\Intersection;
+use App\Models\WorkOrder;
 use Illuminate\Http\Request;
 
 class WorkOrderController extends Controller
@@ -18,7 +19,7 @@ class WorkOrderController extends Controller
      */
     public function index()
     {
-        dd('ordenes de trabajo');
+
     }
 
     /**

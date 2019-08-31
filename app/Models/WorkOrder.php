@@ -17,6 +17,16 @@ class WorkOrder extends Model {
 
     protected $table = 'work_orders';
 
+    protected $fillable = [
+            'user_id',
+            'report_id',
+            'start_date',
+            'end_date',
+            'state',
+    ];
+    
+    //State: 1-Abierto, 0-Cerrado
+    
     //
     public function user() {
         return $this->belongsTo(User::class);
