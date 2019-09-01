@@ -191,7 +191,12 @@ Route::group(['middleware' => ['auth', 'activated', 'role:atmadmin', 'activity',
     Route::post('/reports/vertical-signals', 'ReportsController@search')->name('vsignal-filters');
 });
 
-Route::resource('/workorders', 'WorkOrderController');
+//Adolfo
+Route::resource('/stock', 'StockController');
+Route::get('createorder/{id}', 'WorkOrderController@createorder');
+Route::post('materialsedit/{id}', 'WorkOrderController@materialsedit')->name('materialsedit');
+
+Route::resource('workorders', 'WorkOrderController');
 Route::resource('/alerts', 'AlertController');
 Route::resource('/motives', 'MotiveController');
 Route::resource('/priorities', 'PriorityController');

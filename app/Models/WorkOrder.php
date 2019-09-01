@@ -13,10 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class WorkOrder extends Model {
 
-    use SoftDeletes;
-
     protected $table = 'work_orders';
-
+    
     protected $fillable = [
             'user_id',
             'report_id',
@@ -32,6 +30,10 @@ class WorkOrder extends Model {
         return $this->belongsTo(User::class);
     }
 
+    public function report() {
+        return $this->belongsTo('App\Models\Report');
+    }
+    
 }
 //primero voy a hacer lo que me imagino
 

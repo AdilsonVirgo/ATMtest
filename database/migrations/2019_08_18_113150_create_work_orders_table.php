@@ -18,7 +18,8 @@ class CreateWorkOrdersTable extends Migration
             
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-       //     $table->date('report_id');
+            $table->unsignedBigInteger('report_id');
+            $table->foreign('report_id')->references('id')->on('reports');            
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->boolean('state');
@@ -38,12 +39,6 @@ class CreateWorkOrdersTable extends Migration
             $table->timestamps();            
             $table->softDeletes();
         });
-        /*{{ $total_vsignals }}
-{{$total_intersections }}
-{{ $total_rboxes }}
-{{ $total_poles }}
-{{ $total_tensors }}
-{{ $total_lights }}*/
     }
 
     /**

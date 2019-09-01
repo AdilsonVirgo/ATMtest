@@ -199,6 +199,21 @@ return [
     'create_vsignal_ph_cross_st'    => 'Calle cruzada',
     'create_vsignal_icon_cross_st'  => 'fa-newspaper-o',
 
+    // Work Orders
+    'create_workorder_button_text' => 'Crear nueva intersección',
+
+    'create_workorder_label_userId' => 'Asignar a:',
+    'create_workorder_ph_userId'    => 'Usuario',
+    'create_workorder_icon_userId'  => 'fa-newspaper-o',
+
+    'create_workorder_label_reportId' => 'No. Reporte:',
+    'create_workorder_ph_reportId'    => 'No. Reporte',
+    'create_workorder_icon_reportId'  => 'fa-newspaper-o',
+
+    'create_workorder_label_startdate' => 'Fecha de Inicio:',
+    'create_workorder_ph_startdate'    => 'Fecha de Inicio',
+    'create_workorder_icon_startdate'  => 'fa-newspaper-o',
+
     // Devices
     'create_device_button_text' => 'Crear nuevo dispositivo',
 
