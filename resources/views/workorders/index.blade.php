@@ -49,44 +49,55 @@
                         <div class="table-responsive intersections-table">
                             <table class="table table-striped table-sm data-table">
                                 <caption id="intersection_count">
-                                    {{ trans_choice('intersections.intersections-table.caption', 1, ['intersectionscount' => $intersections->count()]) }}
+                                    {{ trans_choice('intersections.intersections-table.caption', 1, ['intersectionscount' => $workOrder->count()]) }}
                                 </caption>
                                 <thead class="thead">
                                 <tr>
                                     <th class="no-search no-sort"></th>
-                                    <th>{!! trans('intersections.intersections-table.main_st') !!}</th>
-                                    <th>{!! trans('intersections.intersections-table.cross_st') !!}</th>
-                                    <th class="hidden-xs">{!! trans('intersections.intersections-table.latitude') !!}</th>
-                                    <th class="hidden-xs">{!! trans('intersections.intersections-table.longitude') !!}</th>
-                                    <th>{!! trans('intersections.intersections-table.actions') !!}</th>
+                                    <th>{!! trans('workorders.workorder-table.user_id') !!}</th>
+                                    <th>{!! trans('workorders.workorder-table.report_id') !!}</th>
+                                    <th>{!! trans('workorders.workorder-table.description') !!}</th>
+                                    <th>{!! trans('workorders.workorder-table.startdate') !!}</th>
+                                    <th class="hidden-xs">{!! trans('workorders.workorder-table.state') !!}</th>
+                                    <th>{!! trans('workorders.workorder-table.actions') !!}</th>
                                     <th class="no-search no-sort"></th>
                                 </tr>
                                 </thead>
                                 <tbody id="intersections_table">
-                                @foreach($intersections as $intersection)
+                                @foreach($workOrder as $workOrders)
                                     <tr>
                                         <td>
-                                            {!! Form::open(array('url' => 'intersections/' . $intersection->id, 'class' => '', 'data-toggle' => 'tooltip', 'title' => 'Cerrar')) !!}
+                                            {!! Form::open(array('url' => 'workorders/' . $workOrders->id, 'class' => '', 'data-toggle' => 'tooltip', 'title' => 'Cerrar')) !!}
                                             {!! Form::hidden('_method', 'DELETE') !!}
-                                            {!! Form::button(trans('workorders.buttons.cerrar'), array('class' => 'btn btn-danger btn-sm','type' => 'button', 'style' =>'width: 100%;' ,'data-toggle' => 'modal', 'data-target' => '#confirmClose', 'data-title' => 'Cerrar orden de trabajo', 'data-message' => '¿Está seguro que desea cerrar la orden de trabajo seleccionada?')) !!}
+                                            {!! Form::button(trans('workorders.buttons.cerrar_orden'), array('class' => 'btn btn-danger btn-sm','type' => 'button', 'style' =>'width: 100%;' ,'data-toggle' => 'modal', 'data-target' => '#confirmClose', 'data-title' => 'Cerrar orden de trabajo', 'data-message' => '¿Está seguro que desea cerrar la orden de trabajo seleccionada?')) !!}
                                             {!! Form::close() !!}
                                         </td>
-                                        <td>{{$intersection->main_st}}</td>
-                                        <td>{{$intersection->cross_st}}</td>
-                                        <td class="hidden-xs">{{$intersection->latitude}}</td>
-                                        <td class="hidden-xs">{{$intersection->longitude}}</td>
+                                        <td>{{$workOrders->user->name}}</td>
+                                        <td>{{$workOrders->report_id}}</td>
+                                        <td>{{$workOrders->report->description}}</td>
+                                        <td>{{$workOrders->start_date}}</td>
+                                        @if($workOrders->state)
+                                            <td>Abierta</td>
+                                        @endif
                                         <td>
                                             <a class="btn btn-sm btn-success btn-block"
-                                               href="{{ URL::to('intersections/' . $intersection->id) }}"
+                                               href="{{ URL::to('workorders/' . $workOrders->id) }}"
                                                data-toggle="tooltip" title="Mostrar">
-                                                {!! trans('intersections.buttons.show') !!}
+                                                {!! trans('workorders.buttons.show') !!}
                                             </a>
                                         </td>
                                         <td>
                                             <a class="btn btn-sm btn-info btn-block"
-                                               href="{{ URL::to('intersections/' . $intersection->id . '/edit') }}"
+                                               href="{{ URL::to('workorders/' . $workOrders->id . '/edit') }}"
                                                data-toggle="tooltip" title="Editar">
-                                                {!! trans('intersections.buttons.edit') !!}
+                                                {!! trans('workorders.buttons.edit') !!}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-info btn-block"
+                                               href="{{ URL::to('pdf/' . $workOrders->id) }}"
+                                               data-toggle="tooltip" title="Editar">
+                                                PDF
                                             </a>
                                         </td>
                                     </tr>
@@ -98,9 +109,6 @@
                                 @endif
                             </table>
 
-                            @if(config('atm_app.enablePagination'))
-                                {{ $intersections->links() }}
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -108,12 +116,12 @@
         </div>
     </div>
 
-    @include('modals.modal-delete')
+    @include('modals.modal-close-order')
 
 @endsection
 
 @section('footer_scripts')
-    @if ((count($intersections) > config('atm_app.datatablesJsStartCount')) && config('atm_app.enabledDatatablesJs'))
+    @if ($workOrderTotal > config('atm_app.datatablesJsStartCount')) && config('atm_app.enabledDatatablesJs'))
         @include('scripts.datatables')
     @endif
 
