@@ -11,7 +11,10 @@ class Status extends Model {
     protected $fillable = ['name', 'description'];
 
     public function alert() {
-        return $this->belongsTo(Alert::class);
+        return $this->hasOne(Alert::class);
+    }
+    public function report() {
+        return $this->hasOne(Report::class);
     }
 
 }

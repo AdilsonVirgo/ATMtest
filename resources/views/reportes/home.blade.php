@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-{!! trans('alerts.showing-all') !!}
+{!! trans('reportes.showing-all') !!}
 @endsection
 
 @section('template_linked_css')
@@ -46,16 +46,16 @@
         }  
         .showbutton:after {
             content: "V";
-        }        
-        .attendbutton:before {
+        }
+        .deletebutton:before {
             content: "";
         }  
-        .attendbutton:after {
+        .deletebutton:after {
+            content: "B";
+        }
+        .attendbutton:before {
             content: "A";
         }  
-        .rejectbutton:before {
-            content: "";
-        }
         .rejectbutton:after {
             content: "D";
         }
@@ -75,6 +75,12 @@
             content: "";
         }  
         .showbutton:after {
+            content: "";
+        }
+        .deletebutton:before {
+            content: "";
+        }  
+        .deletebutton:after {
             content: "";
         }
         .attendbutton:before {
@@ -114,13 +120,13 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
 
                         <span id="card_title">
-                            {!! trans('alerts.showing-all') !!}
+                            {!! trans('reportes.showing-all') !!}
                         </span>
 
                         <div class="btn-group pull-right btn-group-xs">
-                            <a class="btn btn-primary btn-sm" href="/alerts/create">
+                            <a class="btn btn-primary btn-sm" href="/reportes/create">
                                 <i class="fa fa-fw fa-user-plus" aria-hidden="true"></i>
-                                {!! trans('alerts.buttons.create-new') !!}
+                                {!! trans('reportes.buttons.create-new') !!}
                             </a>
                         </div>
                     </div>
@@ -129,60 +135,62 @@
                 <div class="card-body">
 
                     @if(config('atm_app.enableSearch'))
-                    @include('partials.search-alerts-form')
+                    @include('partials.search-reportes-form')
                     @endif
-                    Cantidad total :{{$alertstotal}}
+                    Cantidad total :{{$reportestotal}}
                     <div class="row border">
                         <table class="table table-bordered table-sm">
                             <thead>
                                 <tr>
                                     <th>Id</th>
-                                    <th>Place</th>
-                                    <th class="mobilehide">Description</th>                                    
+                                    <th>Owner</th>
+                                    <th>Alert</th>
                                     <th class="mobilehide">Status</th>
-                                    <th>Priority</th>
-                                    <th class="mobilehide">Motive</th>                                    
+                                    <th class="mobilehide">Device</th>
+                                    <th class="mobilehide">Assign</th>
+                                    <th class="mobilehide">Material</th>
+                                    <th class="mobilehide">Description</th>                                   
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($alerts as $alert) 
+                                @foreach ($reportes as $reporte) 
                                 <tr class="@php 
-                                    if($alert->status_id==1) { echo e('pending');} 
-                                    if($alert->status_id==2) { echo e('attended');} 
-                                    if($alert->status_id==3) { echo e('rejected');} 
+                                    if($reporte->status_id==1) { echo e('pending');} 
+                                    if($reporte->status_id==2) { echo e('attended');} 
+                                    if($reporte->status_id==3) { echo e('rejected');} 
                                     @endphp">
-                                    <td>{{$alert->id}}</td>
-                                    <td>{{$alert->place}}</td>
-                                    <td class="mobilehide">{{$alert->description}}</td>
-                                    <td class="mobilehide">{{$alert->status->name}}</td>
-                                    <td>{{$alert->priority->name}}</td>
-                                    <td class="mobilehide">{{$alert->motive->name}}</td>
-
+                                    <td>{{$reporte->id}}</td>
+                                    <td>{{$reporte->user_id}}</td>
+                                    <td>{{$reporte->alert_id}}</td>
+                                    <td class="mobilehide">{{$reporte->status->name}}</td>
+                                    <td class="mobilehide">{{$reporte->device_id}}</td>
+                                    <td class="mobilehide">{{$reporte->assign_id}}</td>
+                                    <td class="mobilehide">{{$reporte->material_id}}</td>
+                                    <td class="mobilehide">{{$reporte->description}}</td>
                                     <td>
                                         @role('atmcollector|atmadmin')
-                                        <a class="btn btn-sm btn-warning attendbutton text-white @php
-                                           if($alert->status_id==2) { echo e('disabled');} @endphp"
-                                           href="{{ URL::to('alerts/' . $alert->id.'/attend') }}"
+                                        <a class="btn btn-sm btn-warning attendbutton text-white"
+                                           href="{{ URL::to('reportes/' . $reporte->id.'/attend') }}"
                                            data-toggle="tooltip" title="Attend">
-                                            {!! trans('alerts.buttons.attend') !!}
+                                            {!! trans('reportes.buttons.attend') !!}
                                         </a>
                                         @endrole
                                         <a class="btn btn-sm btn-success showbutton"
-                                           href="{{ URL::to('alerts/' . $alert->id) }}"
+                                           href="{{ URL::to('reportes/' . $reporte->id) }}"
                                            data-toggle="tooltip" title="Show">
-                                            {!! trans('alerts.buttons.show') !!}
+                                            {!! trans('reportes.buttons.show') !!}
                                         </a>
                                         <a class="btn btn-sm btn-info editbutton"
-                                           href="{{ URL::to('alerts/' . $alert->id . '/edit') }}"
+                                           href="{{ URL::to('reportes/' . $reporte->id . '/edit') }}"
                                            data-toggle="tooltip" title="Edit">
-                                            {!! trans('alerts.buttons.edit') !!}
+                                            {!! trans('reportes.buttons.edit') !!}
                                         </a>
                                         @role('atmcollector|atmadmin')
-                                        <a class="btn btn-sm btn-dark rejectbutton"
-                                           href="{{ URL::to('alerts/' . $alert->id . '/reject') }}"
+                                        <a class="btn btn-sm btn-dark rejectbutton text-white"
+                                           href="{{ URL::to('reportes/' . $reporte->id.'/reject') }}"
                                            data-toggle="tooltip" title="Reject">
-                                            {!! trans('alerts.buttons.reject') !!}
+                                            {!! trans('reportes.buttons.reject') !!}
                                         </a>
                                         @endrole
                                     </td>
@@ -201,20 +209,5 @@
     </div>
 </div>
 
-@include('modals.modal-delete')
 
-@endsection
-
-@section('footer_scripts')
-@if ((count($alerts) > config('atm_app.datatablesJsStartCount')) && config('atm_app.enabledDatatablesJs'))
-@include('scripts.datatables')
-@endif
-@include('scripts.delete-modal-script')
-@include('scripts.save-modal-script')
-@if(config('atm_app.tooltipsEnabled'))
-@include('scripts.tooltips')
-@endif
-@if(config('atm_app.enableSearch'))
-@include('scripts.search-alerts')
-@endif
 @endsection

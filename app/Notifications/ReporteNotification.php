@@ -2,25 +2,25 @@
 
 namespace App\Notifications;
 
-use App\Models\Alert;
+use App\Models\Report;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class AlertNotificacion extends Notification
+class ReporteNotification extends Notification
 {
     use Queueable;
 
-    private $alert;
+    private $reporte;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($alert)
+    public function __construct($reporte)
     {
-        $this->alert = $alert;
+        $this->reporte = $reporte;
     }
 
     /**
@@ -56,10 +56,9 @@ class AlertNotificacion extends Notification
      */
     public function toArray($notifiable)
     {
-        return [
-            'id' => $this->alert->id,
-            'place' => $this->alert->place
-       
+         return [
+            'id' => $this->report->id,
+            'owner' => $this->report->user_id       
         ];
     }
 }

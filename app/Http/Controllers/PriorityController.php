@@ -13,8 +13,10 @@ class PriorityController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $prioritys = Priority::all();
-        return view('priorities.index', compact($prioritys, 'prioritys'));
+        $pagintaionEnabled = config('atm_app.enablePagination');
+        $priorities = Priority::all();
+        $prioritiestotal = Priority::count();
+        return View('priorities.home', compact('priorities', 'prioritiestotal'));
     }
 
     /**
@@ -37,12 +39,12 @@ class PriorityController extends Controller {
         $attributes = $request->validate([
             'name' => ['required', 'unique:priorities']
         ]);
-        $retorno = tap(new Priority($attributes))->save();
+        $newone = new Priority($attributes);
+        $retorno = tap($newone)->save();
         if ($retorno) {
-            return redirect()->to(url('/priorities'))->with('status', 'Inserted');
-        } else {
-            return redirect()->to(url('/priorities'))->with('status', 'No Inserted');
+            return redirect('priorities/' . $newone->id)->with('success', trans('motives.createSuccess'));
         }
+        return back()->with('error', trans('Error creando el motivo. Inténtelo de nuevo o contacte al administrador.'));
     }
 
     /**

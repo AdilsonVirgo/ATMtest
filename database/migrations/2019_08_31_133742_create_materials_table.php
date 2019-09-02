@@ -17,9 +17,10 @@ class CreateMaterialsTable extends Migration
             $table->bigIncrements('id');  
             $table->string('erp_code', 50)->nullable();
             $table->string('name');   
-            $table->int('quantity');              
+            $table->integer('quantity');              
             $table->boolean('origen')->default(true);     //1-stock(predefinido) o false- almacen         
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

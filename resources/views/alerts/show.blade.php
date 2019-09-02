@@ -7,14 +7,14 @@
             <div class="card">
                 <div class="card-header text-white bg-success">
                     <div class="row">                      
-                        <div class="col-6"><a class="nav-link text-white" href="{{url('/motives') }}">Motives</a>
+                        <div class="col-6"><a class="nav-link text-white" href="{{url('/alerts') }}">Alertas</a>
 
                         </div>
-                        <div class="col-6"><a href="{{url('/motives') }}" class="btn btn-light btn-sm float-right"
+                        <div class="col-6"><a href="{{url('/alerts') }}" class="btn btn-light btn-sm float-right"
                                               data-toggle="tooltip" data-placement="left"
-                                              title="{{ trans('signalsinventory.tooltips.back-users') }}">
+                                              title="{{ trans('alerts.tooltips.back-users') }}">
                                 <i class="fa fa-fw fa-reply-all" aria-hidden="true"></i>
-                                {!! trans('motives.buttons.back-to-motives') !!}
+                                {!! trans('alerts.buttons.back-to-alerts') !!}
                             </a>
                         </div>
                     </div>
@@ -32,12 +32,12 @@
                             <div class="card">
 
                                 <div class="col-6">
-                                    <span class="text-muted">Nombre<button type="button" class="btn btn-sm btn-outline-secondary">{{$motive->name}}</button></span>
+                                    <span class="text-muted">Lugar<button type="button" class="btn btn-sm btn-outline-secondary">{{$alert->place}}</button></span>
                                     <br/>
                                 </div>
                                 <div class="col-6">
                                        <br/>
-                                    <span class="text-muted">Descripcion<button type="button" class="btn btn-sm btn-outline-secondary">{{$motive->created_at}}</button></span>
+                                    <span class="text-muted">Creado<button type="button" class="btn btn-sm btn-outline-secondary">{{$alert->created_at}}</button></span>
                                 </div>
                             </div>
                         </div>
@@ -57,13 +57,10 @@
                                         Continuar a...
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                         <a class="dropdown-item btn btn-sm" href="{{ URL::to('/motives') }}"><i class="fa fa-plus-square"></i>Motivos</a>                                    
-                                    @role('atmadmin')
-                                    <a class="dropdown-item btn btn-sm" href="{{ URL::to('/motives/create') }}"><i class="fa fa-plus-square"></i> Nueva Motivos</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item btn btn-sm" href="{{ URL::to('/priorities/create') }}"><i class="fa fa-plus-square"></i> Nuevo Prioridad</a>
-                                    @endrole
-                                    </div>
+                                        <a class="dropdown-item btn btn-sm" href="{{ URL::to('/statuses/create') }}"><i class="fa fa-plus-square"></i> Nueva Estado</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item btn btn-sm" href="{{ URL::to('/statuses/create') }}"><i class="fa fa-plus-square"></i> Nuevo Prioridad</a>
+                                         </div>
                                 </div>
                             </div>
                         </div>
