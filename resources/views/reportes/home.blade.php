@@ -106,7 +106,7 @@
     .rejected{
         background-color: grey;
         text-decoration: line-through;
-    }       //
+    }       
 </style>
 @endsection
 
