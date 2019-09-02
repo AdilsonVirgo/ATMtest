@@ -194,7 +194,8 @@ Route::group(['middleware' => ['auth', 'activated', 'role:atmadmin', 'activity',
 //Adolfo
 Route::resource('/stock', 'StockController');
 Route::get('createorder/{id}', 'WorkOrderController@createorder');
-Route::post('materialsedit/{id}', 'WorkOrderController@materialsedit')->name('materialsedit');
+Route::get('materialsedit/{id}', 'WorkOrderController@materialsedit')->name('materialsedit');
+Route::get('pdf/{id}', 'WorkOrderController@pdf')->name('pdf');
 
 Route::resource('workorders', 'WorkOrderController');
 Route::resource('/alerts', 'AlertController');

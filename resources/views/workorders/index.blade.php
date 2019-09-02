@@ -93,6 +93,13 @@
                                                 {!! trans('workorders.buttons.edit') !!}
                                             </a>
                                         </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-info btn-block"
+                                               href="{{ URL::to('pdf/' . $workOrders->id) }}"
+                                               data-toggle="tooltip" title="Editar">
+                                                PDF
+                                            </a>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>

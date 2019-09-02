@@ -12,6 +12,7 @@ use App\Models\Alert;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use \PDF;
 
 class WorkOrderController extends Controller
 {
@@ -114,6 +115,21 @@ class WorkOrderController extends Controller
         $roles = Role::all();        
         return view('workorders.edit', compact('workOrder','users','roles','material'));       
     }
+    
+    public function pdf($id)
+    {        
+        /**
+         * toma en cuenta que para ver los mismos 
+         * datos debemos hacer la misma consulta
+        **/
+        $workOrder = WorkOrder::find($id);
+        $material = Material::whereReportId($workOrder->report_id)->get();   
+        
+        
+        $pdf = PDF::loadView('workorders.show-workorder', compact('workOrder','material'));
+
+        return $pdf->stream();
+    }
 
     /**
      * Update the specified resource in storage.
@@ -135,10 +151,30 @@ class WorkOrderController extends Controller
         }
 
         if ($workOrder->save()) {
-            return redirect('workorders/' . $workOrder->id)->with('success', trans('workorders.updateSuccess'));
+            return redirect('workorders/' . $workOrder->id )->with('success', trans('workorders.updateSuccess'));
         }
 
-        return back()->with('error', trans('workorders.update-workorders-error'));
+        //return back()->with('error', trans('workorders.update-workorders-error'));
+        
+    }
+
+    public function updateWorkOrder(Request $request, $id)
+    {
+        $workOrder = WorkOrder::findOrFail($id);
+
+        if ($request->get('user_id') && $workOrder->user_id != $request->input('user_id')) {
+            $workOrder->user_id = $request->input('user_id');
+        }
+
+        if ($request->get('start_date') && $workOrder->start_date != $request->input('start_date')) {
+            $workOrder->start_date = $request->input('start_date');
+        }
+
+        if ($workOrder->save()) {
+            return redirect('workorders/' . $workOrder->id )->with('success', trans('workorders.updateSuccess'));
+        }
+
+        //return back()->with('error', trans('workorders.update-workorders-error'));
         
     }
 
@@ -146,15 +182,15 @@ class WorkOrderController extends Controller
     {
         $material = Material::findOrFail($id);
 
-        if ($request->get('origen') && $workOrder->origen != $request->input('origen')) {
+        if ($request->get('origen') && $material->origen != $request->input('origen')) {
             $material->origen = $request->input('origen');
         }
 
         if ($material->save()) {
-            return redirect('workorders/' . $material->id)->with('success', trans('workorders.updateMaterialsSuccess'));
+          //  return redirect('workorders/' . $material->id .'/edit')->with('success', trans('workorders.updateMateriaSuccess'));
         }
 
-        return back()->with('error', trans('workorders.update-workorders-error'));
+      //  return back()->with('error', trans('workorders.update-workorders-error'));
         
     }
 

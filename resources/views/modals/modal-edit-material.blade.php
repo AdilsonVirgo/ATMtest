@@ -12,18 +12,23 @@
       </div>
       <div class="modal-body">
             <div class="card-body">
-                {!! Form::open(array('route' => ['materialsedit', $workOrder->id], 'method' => 'POST', 'role' => 'form', 'class' => 'needs-validation')) !!}
+                {!! Form::open(array('route' => ['materialsedit', $materials->id], 'method' => 'PUT', 'role' => 'form', 'class' => 'needs-validation')) !!}
 
                 {!! csrf_field() !!}
-
+               
                 <br>
                 <div class="form-group has-feedback row {{ $errors->has('report_id') ? ' has-error ' : '' }}">
                     {!! Form::label('report_id', trans('workorders.editorigen'), array('class' => 'col-md-3 control-label')); !!}
                     <div class="col-md-9">
                         <div class="input-group">
-                            <select class="form-control" id="user_id" name="user_id">
-                                <option value="1">STOCK</option>                      
-                                <option value="0">ALMACEN</option>
+                            <select class="form-control" id="user_id" name="origen">
+                                @if($materials->origen)
+                                    <option value="1" selected>STOCK</option>                      
+                                    <option value="0">ALMACEN</option>
+                                @else
+                                    <option value="1">STOCK</option>                      
+                                    <option value="0" selected>ALMACEN</option>                               
+                                @endif
                             </select>
                         </div>
                         @if ($errors->has('report_id'))

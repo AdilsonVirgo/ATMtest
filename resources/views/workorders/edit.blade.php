@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="card-body">
-                        {!! Form::open(array('route' => ['workorders.update', $workOrder->id], 'method' => 'PUT', 'role' => 'form', 'class' => 'needs-validation')) !!}
+                        {!! Form::open(array('route' => ['workorders.update', $workOrder->id], 'role' => 'form')) !!}
 
                         {!! csrf_field() !!}
 
@@ -45,9 +45,15 @@
                                         @foreach($users as $user)
                                             @foreach ($user->roles as $user_role)
                                                 @if ($user_role->name == 'ATM Operator')
-                                                    <option value="{{ $user->id }}" selected="{{ $workOrder->user_id }}">
-                                                        {{ $user->name }}
-                                                    </option>
+                                                    @if($user->id == $workOrder->user_id)
+                                                        <option value="{{ $user->id }}" selected="{{ $user->id }}">
+                                                            {{ $user->name }}
+                                                        </option>
+                                                    @else
+                                                        <option value="{{ $user->id }}">
+                                                            {{ $user->name }}
+                                                        </option>                                                    
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         @endforeach
@@ -148,8 +154,8 @@
                                                                 <td>ALMACEN</td>
                                                             @endif
                                                             <td>
-                                                                {!! Form::open(array('url' => 'workorders/' . $materials->id, 'class' => '', 'data-toggle' => 'tooltip', 'title' => 'Cerrar')) !!}
-                                                                {!! Form::hidden('_method', 'POST') !!}
+                                                                {!! Form::open(array('url' => 'workorders/' . $materials->id . '/edit', 'class' => '', 'data-toggle' => 'tooltip', 'title' => 'Cerrar')) !!}
+                                                                {!! Form::hidden('_method', 'PUT') !!}
                                                                 {!! Form::button(trans('workorders.buttons.edit_materials'), array('class' => 'btn btn-danger btn-sm','type' => 'button', 'style' =>'width: 100%;' ,'data-toggle' => 'modal', 'data-target' => '#editmaterial', 'data-title' => 'Editar el Origen del Material', 'data-message' => '')) !!}
                                                                 {!! Form::close() !!}
                                                             </td>
