@@ -125,7 +125,7 @@ class ReportController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit(Alert $alert) {
-        // $status = Status::find($id);
+        // $status = Status::find($id);cambios
         $alerts = Motive::all();
         $priorities = Priority::all();
         $motives = Motive::all();
