@@ -193,10 +193,19 @@ Route::group(['middleware' => ['auth', 'activated', 'role:atmadmin', 'activity',
 
 Route::resource('/workorders', 'WorkOrderController');
 Route::resource('/alerts', 'AlertController');
+Route::get('/alerts/{id}/reject', 'AlertController@reject');
+Route::get('/alerts/{id}/attend', 'AlertController@attend');
 Route::resource('/motives', 'MotiveController');
 Route::resource('/priorities', 'PriorityController');
 Route::resource('/statuses', 'StatusController');
+Route::resource('/materials', 'MaterialController');
+Route::resource('/reportes', 'ReportController');
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::post('search-motives', 'MotiveController@search')->name('search-motives');
 Route::post('search-alerts', 'VerticalSignalController@search')->name('search-alerts');
+Route::post('search-reportes', 'VerticalSignalController@search')->name('search-reportes');
 
+Route::resource('/stock', 'StockController');
+Route::get('createorder/{id}', 'WorkOrderController@createorder');
+Route::get('materialsedit/{id}', 'WorkOrderController@materialsedit')->name('materialsedit');
+Route::get('pdf/{id}', 'WorkOrderController@pdf')->name('pdf');

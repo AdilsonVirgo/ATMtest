@@ -3,25 +3,25 @@
 return [
 
     // Titles
-    'showing-all'     => 'Mostrando todos los motivos',
-    'alerts-menu-alt'        => 'Mostrar menú de gestión de motivos',
-    'create-new-alert'       => 'Crear nueva motivo',
-    'show-deleted-alerts'    => 'Mostrar motivos eliminados',
-    'editing-alert'          => 'Editando el motivo :code',
-    'showing-alert'          => 'Mostrando el motivo :name',
-    'showing-alert-title'    => 'Información del motivo: :name',
+    'showing-all'     => 'Mostrando todos los alertas',
+    'alerts-menu-alt'        => 'Mostrar menú de gestión de alertas',
+    'create-new-alert'       => 'Crear nueva alerta',
+    'show-deleted-alerts'    => 'Mostrar alertas eliminados',
+    'editing-alert'          => 'Editando el alerta :code',
+    'showing-alert'          => 'Mostrando el alerta :name',
+    'showing-alert-title'    => 'Información del alerta: :name',
 
     // Flash Messages
-    'createSuccess'   => '¡Motivo creado! ',
-    'updateSuccess'   => '¡Motivo actualizado! ',
-    'deleteSuccess'   => '¡Motivo eliminado! ',
+    'createSuccess'   => '¡Alerta creado! ',
+    'updateSuccess'   => '¡Alerta actualizado! ',
+    'deleteSuccess'   => '¡Alerta eliminado! ',
     'deleteSelfError' => '¡Ud no puede auto eliminarse! ',
 
     // Show Vertical Signal Tab
     'viewProfile'            => 'View Profile',
-    'editUser'               => 'Edit Motivos',
-    'deleteUser'             => 'Delete  Motivos',
-    'alertsBackBtn'           => 'Regresar a  Motivos',
+    'editUser'               => 'Edit Alertas',
+    'deleteUser'             => 'Delete  Alertas',
+    'alertsBackBtn'           => 'Regresar a  Alertas',
     'alertsPanelTitle'        => 'User Information',
     'labelErpCode'             => 'Código en el ERP:',
     'labelName'             => 'Nombre de la señal:',
@@ -52,8 +52,8 @@ return [
     'labelIpUpdate'          => 'Last Update IP:',
     'labelDeletedAt'         => 'Deleted on',
     'labelIpDeleted'         => 'Deleted IP:',
-    'alertsDeletedPanelTitle' => 'Deleted  Motivos Information',
-    'alertsBackDelBtn'        => 'Regresar a  Motivos borrados',
+    'alertsDeletedPanelTitle' => 'Deleted  Alertas Information',
+    'alertsBackDelBtn'        => 'Regresar a  Alertas borrados',
 
     'successRestore'    => 'Alerts successfully restored.',
     'successDestroy'    => 'Alerts record successfully destroyed.',
@@ -63,7 +63,7 @@ return [
     'labelUserLevels' => 'Levels',
 
     'alerts-table' => [
-        'caption'   => ':alertscount/:alertstotal motivos.',
+        'caption'   => ':alertscount/:alertstotal alertas.',
         'id'        => 'ID',
         'code'        => 'Código',
         'creator'      => 'Creador',
@@ -88,12 +88,14 @@ return [
     ],
 
     'buttons' => [
-        'create-new'    => 'Nuevo motivo',
+        'create-new'    => 'Nuevo alerta',
         'delete'        => '<i class="fa fa-trash-o fa-fw" aria-hidden="true"></i>  ',
         'show'          => '<i class="fa fa-eye fa-fw" aria-hidden="true"></i> ',
         'edit'          => '<i class="fa fa-pencil fa-fw" aria-hidden="true"></i> ',
-        'back-to-alerts' => '<span class="hidden-sm hidden-xs">Regresar </span><span class="hidden-xs">a Motivos</span>',
-        'back-to-alert'  => 'Regresar  <span class="hidden-xs">a Motivo</span>',
+        'attend'          => '<i class="fa fa-check fa-fw" aria-hidden="true"></i> ',
+        'reject'          => '<i class="fa fa-ban fa-fw" aria-hidden="true"></i> ',
+        'back-to-alerts' => '<span class="hidden-sm hidden-xs">Regresar </span><span class="hidden-xs">a Alertas</span>',
+        'back-to-alert'  => 'Regresar  <span class="hidden-xs">a Alerta</span>',
         'delete-alert'   => '<i class="fa fa-trash-o fa-fw" aria-hidden="true"></i>  ',
         'edit-alert'     => '<i class="fa fa-pencil fa-fw" aria-hidden="true"></i> ',
     ],
@@ -102,11 +104,11 @@ return [
         'delete'        => 'Eliminar',
         'show'          => 'Mostrar',
         'edit'          => 'Editar',
-        'create-new'    => 'Crear nuevo motivo',
-        'back-alerts'    => 'Regresar a señales verticales',
-        'back-alert'    => 'Regresar a motivo',
+        'create-new'    => 'Crear nuevo alerta',
+        'back-alerts'    => 'Regresar a alertas',
+        'back-alert'    => 'Regresar a alerta',
         'email-alert'    => 'Email :alert',
-        'submit-search' => 'Enviar búsqueda de motivo',
+        'submit-search' => 'Enviar búsqueda de alerta',
         'clear-search'  => 'Limpiar los resultados de búsqueda',
     ],
 
@@ -126,7 +128,7 @@ return [
         'alert-creation-success'  => 'Successfully created vertical signal!',
         'update-alert-success'    => 'Successfully updated vertical signal!',
         'delete-success'         => '¡Señal vertical borrada con éxito!',
-        'delete-error'         => '¡Error eliminando el motivo!',
+        'delete-error'         => '¡Error eliminando el alerta!',
         'cannot-delete-yourself' => 'You cannot delete yourself!',
     ],
 
@@ -143,12 +145,12 @@ return [
 
     'search'  => [
         'title'             => 'Mostrando los resultados de la búsqueda',
-        'found-footer'      => ' Señales(s) encontradas',
+        'found-footer'      => ' Alerta(s) encontradas',
         'no-results'        => 'Sin resultados',
-        'search-alerts-ph'   => 'Buscar señales verticales',
+        'search-alerts-ph'   => 'Buscar Alertas',
     ],
 
     'modals' => [
-        'delete_alert_message' => '¿Está segudo de borrar el motivo :alert?',
+        'delete_alert_message' => '¿Está segudo de borrar el alerta :alert?',
     ],
 ];

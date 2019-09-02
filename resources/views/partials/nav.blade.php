@@ -146,18 +146,7 @@
                         </a>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {!! trans('titles.alertsDropdownNav') !!}
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item {{ Request::is('alerts', 'alerts/*') ? 'active' : null }}"
-                           href="{{ URL::to('/alerts/') }}">
-                            {!! trans('titles.alertsList') !!}
-                        </a>
-                    </div>
-                </li>
+
                 @endrole
 
                 @role('atmoperator|atmadmin')
@@ -174,6 +163,41 @@
                     </div>
                 </li>
                 @endrole
+
+                @role('atmoperator|atmcollector|atmadmin')
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {!! trans('titles.alertsDropdownNav') !!}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item {{ Request::is('alerts', 'alerts/*') ? 'active' : null }}"
+                           href="{{ URL::to('/alerts/') }}">
+                            {!! trans('titles.alertsList') !!}
+                        </a>
+                        <a class="dropdown-item {{ Request::is('alerts', 'reportes/*') }}"
+                           href="{{ URL::to('/reportes/') }}">
+                            {!! trans('titles.reportsList') !!}
+                        </a>
+                        <a class="dropdown-item {{ Request::is('alerts', 'materials/*') }}"
+                           href="{{ URL::to('/materials/') }}">
+                            {!! trans('titles.materialsList') !!}
+                        </a>
+                        <a class="dropdown-item {{ Request::is('alerts', 'motives/*') }}"
+                           href="{{ URL::to('/motives/') }}">
+                            {!! trans('titles.motivesList') !!}
+                        </a>
+                        <a class="dropdown-item {{ Request::is('alerts', 'priorities/*')}}"
+                           href="{{ URL::to('/priorities/') }}">
+                            {!! trans('titles.priorityList') !!}
+                        </a>
+                        <a class="dropdown-item {{ Request::is('alerts', 'statuses/*') }}"
+                           href="{{ URL::to('/statuses/') }}">
+                            {!! trans('titles.statusList') !!}
+                        </a>                        
+                    </div>
+                </li>
+                @endrole
             </ul>
             {{-- Right Side Of Navbar --}}
             <ul class="navbar-nav ml-auto">                 
@@ -186,9 +210,22 @@
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         @foreach (auth()->user()->unreadNotifications as $not)
-                        <a class="dropdown-item" style="color: red;" href="{{url('/notification/'.$not->id) }}">
-                            {{$not->data['motive_name']}}
+                        @if($not->type == "App\Notifications\AlertNotificacion")
+                        <a class="dropdown-item" style="color: red;" href="{{url('/alerts/'.$not->data['id']) }}">
+                            Alerta-{{$not->data['id']}}
                         </a>
+                        @endif
+                        @if($not->type == "App\Notifications\ReporteNotification")
+                        <a class="dropdown-item" style="color: blue;" href="{{url('/reportes/'.$not->data['id']) }}">
+                            Reporte-{{$not->data['id']}}
+                        </a>
+                        @endif
+                        @if($not->type == "App\Notifications\WorkOrderNotification")
+                        <a class="dropdown-item" style="color: green;" href="{{url('/workorders/'.$not->data['id']) }}">
+                            OrdenTrabajo-{{$not->data['id']}}
+                        </a>
+                        @endif
+
                         @endforeach
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
@@ -214,7 +251,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                            onclick="event.preventDefault();
-                                       document.getElementById('logout-form').submit();">
+                                   document.getElementById('logout-form').submit();">
                             Cerrar sesión
                         </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

@@ -1,14 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\DevicesInventory;
 use App\Models\Alert;
 use App\Models\Motive;
 use App\Models\Status;
 use App\Models\Priority;
-use App\User;
-use App\Models\DevicesInventory;
-use App\Models\Configuration;
+use App\Models\User;
+use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -20,6 +19,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\AlertCreatedNotification;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AlertController extends Controller {
 
@@ -28,12 +28,12 @@ class AlertController extends Controller {
     }
 
     public function index() {
-        $motives = Motive::all();       
+        $motives = Motive::all();
         $statuses = Status::all();
         $priorities = Priority::all();
         $alerts = Alert::all();
-         $motivestotal = Alert::count();
-        return view('alerts.home', compact('alerts', 'priorities', 'statuses', 'motives','motivestotal'));
+        $alertstotal = Alert::count();
+        return view('alerts.home', compact('alerts', 'priorities', 'motives', 'statuses', 'alertstotal'));
     }
 
     /**
@@ -43,10 +43,11 @@ class AlertController extends Controller {
      */
     public function create() {
         $alerts = Alert::all();
+        $devices = DevicesInventory::all();
         $priorities = Priority::all();
         $motives = Motive::all();
         $statuses = Status::all();
-        return view('alerts.create', compact('alerts', 'priorities', 'statuses', 'motives'));
+        return view('alerts.create', compact('alerts', 'priorities', 'statuses', 'motives','devices'));
     }
 
     /**
@@ -56,31 +57,39 @@ class AlertController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        $provincia = new Alert();
-        $provincia->place = $request->get('place');
-        $provincia->user_id = auth()->user()->id;
-        $provincia->priority_id = $request->get('priority_id');
-        $provincia->status_id = 1; //el id no el nombre  1-pendiente
-        $provincia->motive_id = $request->get('motive_id');
-        $provincia->description = $request->get('description');
-        $retorno = $provincia->save();
-        $user = User::find(auth()->user()->id);
+       // dd($request);//back verification device_id if collector
+        $pendiente_id = DB::table('statuses')->where('name', 'pendiente')->first();
 
-        $details = ['greeting' => 'Hi Artisan',
-            'body' => 'This is my first notification ',
-            'thanks' => 'Thank you for us!',
-            'actionText' => 'View My Site',
-            'actionURL' => url('/'),
-            'alert_id' => 101
-        ];
-        $user->notify(new AlertCreatedNotification($details));
-        dd('done');
-        // dd($retorno);
-        if ($retorno) {
-            return redirect()->to(url('/alerts'))->with('status', 'Inserted');
+        $alertaux = new Alert();
+        $alertaux->place = $request->get('place');
+        $alertaux->user_id = auth()->user()->id;
+        $alertaux->priority_id = $request->get('priority_id');
+        $alertaux->status_id = $pendiente_id->id; //el id no el nombre  1-pendiente2-atendido3-desetimado cuando pase por 2,llenar el completed
+        $alertaux->motive_id = $request->get('motive_id');
+        $alertaux->description = $request->get('description');
+        $retorno = $alertaux->save();
+        if (auth()->user()->getRoles()[0]->level == 2) {
+            //cambiar el pendiente de la alertas
+            $aux = new Report();
+            $aux->user_id = auth()->user()->id;
+            $aux->alert_id = $alertaux->id;
+            $aux->status_id = $pendiente_id->id; 
+            $aux->device_id = $request->get('device_id');
+            $aux->assign_id = auth()->user()->id;
+            $aux->description = $alertaux->description;
+            $rep = $aux->save();    
+            //dd($aux); 
         } else {
-            return redirect()->to(url('/alerts'))->with('status', 'No Inserted');
+            //notificar a todo el mundo notificacion grupal
+            $users = User::all();
+            foreach ($users as $user) {
+                $user->notify(new \App\Notifications\AlertNotificacion($alertaux));
+            }
         }
+        if ($retorno) {
+            return redirect('alerts/' . $alertaux->id)->with('success', trans('alerts.createSuccess'));
+        }
+        return back()->with('error', trans('Error creando la alerta. Inténtelo de nuevo o contacte al administrador.'));
     }
 
     /**
@@ -91,6 +100,17 @@ class AlertController extends Controller {
      */
     public function show(Alert $alert) {
         //$alert = Alerts::find($id);
+        //si alguna notificaccion tiene este data id, en este user marcalas como leida
+        // si alguien marca una alerta como atendida, se da por leida para todos o se puede eliminar como quieran ver pros y contra
+        //restringir las alertas a los users de admin/operators/y escaleras
+        $user = auth()->user();
+        if ($user->unreadNotifications) {
+            foreach ($user->unreadNotifications as $notification) {
+                if ($notification->data['id'] == $alert->id) {//chequear las alertas como tipo
+                    $notification->markAsRead();
+                }
+            }
+        }
         return view('alerts.show', compact($alert, 'alert'));
     }
 
@@ -158,15 +178,26 @@ class AlertController extends Controller {
     }
 
     public function attend(Request $request, $id) {
-        $retorno = \DB::table('alerts')->where('id', $id)->update(['status_id' => 2]);
-        //  dd($alert_id);//1-true  0-false
-        $alerts = Alert::find($id);
-        $reports = Report::all();
+        $atendido = DB::table('statuses')->where('name', 'atendido')->first();
+        $retorno = DB::table('alerts')->where('id', $id)->update(['status_id' => $atendido->id]);
+        $n = DB::table('notifications')->where([['data->id', '1'], ['type', '=', 'App\Notifications\AlertNotificacion']])->update(['read_at' => now()]); //$user->notifications()->delete();
+
+        $reportes = Report::all();
+        $user = auth()->user();
+        $users = User::all();
+        $alert = Alert::find($id);
+        $statuses = Status::all();
+        $devices = DevicesInventory::all();
+        $materials = Material::all();
+        $reportestotal = Report::count();
+        $filtered = $users->reject(function ($item, $key) {
+            return $item->getRoles()[0]->level <> 2;
+        });
+        $collectors = $filtered->all();
         if ($retorno) {
-            return view('reports.created', compact('reports', 'alerts'));
-        } else {
-            return redirect()->to(url('/alerts'))->with('status', '-' . __('not possible'));
+            return view('reportes.create', compact('reportes', 'user', 'alert', 'statuses', 'devices', 'collectors', 'materials', 'reportestotal'));
         }
+        return back()->with('error', trans('Error creando la alerta. Inténtelo de nuevo o contacte al administrador.'));
     }
 
 }

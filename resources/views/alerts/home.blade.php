@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-{!! trans('motives.showing-all') !!}
+{!! trans('alerts.showing-all') !!}
 @endsection
 
 @section('template_linked_css')
@@ -9,22 +9,6 @@
 <link rel="stylesheet" type="text/css" href="{{ config('atm_app.datatablesCssCDN') }}">
 @endif
 <style type="text/css" media="screen">
-    .vsignals-table {
-        border: 0;
-    }
-
-    .vsignals-table tr td:first-child {
-        padding-left: 15px;
-    }
-
-    .vsignals-table tr td:last-child {
-        padding-right: 15px;
-    }
-
-    .vsignals-table.table-responsive,
-    .vsignals-table.table-responsive table {
-        margin-bottom: 0;
-    }
     table{
         width: 50%;
     }
@@ -41,7 +25,13 @@
     .deletebutton:before {
         content: "Borrar :";
     }
-    @media only screen and (max-width: 425px) {
+    .attendbutton:before {
+        content: "Atender :";
+    }
+    .rejectbutton:before {
+        content: "Desestimar :";
+    }
+    @media only screen and (max-width: 768px) {
         .mobilehide{
             display: none;
         }
@@ -56,16 +46,22 @@
         }  
         .showbutton:after {
             content: "V";
-        }
-        .deletebutton:before {
+        }        
+        .attendbutton:before {
             content: "";
         }  
-        .deletebutton:after {
-            content: "B";
+        .attendbutton:after {
+            content: "A";
+        }  
+        .rejectbutton:before {
+            content: "";
+        }
+        .rejectbutton:after {
+            content: "D";
         }
 
     }
-    @media only screen and (max-width: 320px) {
+    @media only screen and (max-width: 600px) {
         .mobilehide{
             display: none;
         }
@@ -81,14 +77,30 @@
         .showbutton:after {
             content: "";
         }
-        .deletebutton:before {
+        .attendbutton:before {
             content: "";
         }  
-        .deletebutton:after {
+        .attendbutton:after {
+            content: "";
+        }
+        .rejectbutton:before {
+            content: "";
+        }  
+        .rejectbutton:after {
             content: "";
         }
 
     }
+    .pending{
+        background-color: lightyellow;
+    }
+    .attended{
+        background-color: lightgray;
+    }
+    .rejected{
+        background-color: grey;
+        text-decoration: line-through;
+    }       
 </style>
 @endsection
 
@@ -102,13 +114,13 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
 
                         <span id="card_title">
-                            {!! trans('motives.showing-all') !!}
+                            {!! trans('alerts.showing-all') !!}
                         </span>
 
                         <div class="btn-group pull-right btn-group-xs">
-                            <a class="btn btn-primary btn-sm" href="/motives/create">
+                            <a class="btn btn-primary btn-sm" href="/alerts/create">
                                 <i class="fa fa-fw fa-user-plus" aria-hidden="true"></i>
-                                {!! trans('motives.buttons.create-new') !!}
+                                {!! trans('alerts.buttons.create-new') !!}
                             </a>
                         </div>
                     </div>
@@ -117,35 +129,62 @@
                 <div class="card-body">
 
                     @if(config('atm_app.enableSearch'))
-                    @include('partials.search-motives-form')
+                    @include('partials.search-alerts-form')
                     @endif
-                    Cantidad total :{{$motivestotal}}
+                    Cantidad total :{{$alertstotal}}
                     <div class="row border">
                         <table class="table table-bordered table-sm">
                             <thead>
                                 <tr>
                                     <th>Id</th>
-                                    <th>Name</th>
+                                    <th>Place</th>
                                     <th class="mobilehide">Description</th>                                    
+                                    <th class="mobilehide">Status</th>
+                                    <th>Priority</th>
+                                    <th class="mobilehide">Motive</th>                                    
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($motives as $motive) 
-                                <tr>
-                                    <td>{{$motive->id}}</td>
-                                    <td>{{$motive->name}}</td>
-                                    <td class="mobilehide">{{$motive->description}}</td>
-                                    <td><a class="btn btn-sm btn-success showbutton"
-                                           href="{{ URL::to('motives/' . $motive->id) }}"
+                                @foreach ($alerts as $alert) 
+                                <tr class="@php 
+                                    if($alert->status_id==1) { echo e('pending');} 
+                                    if($alert->status_id==2) { echo e('attended');} 
+                                    if($alert->status_id==3) { echo e('rejected');} 
+                                    @endphp">
+                                    <td>{{$alert->id}}</td>
+                                    <td>{{$alert->place}}</td>
+                                    <td class="mobilehide">{{$alert->description}}</td>
+                                    <td class="mobilehide">{{$alert->status->name}}</td>
+                                    <td>{{$alert->priority->name}}</td>
+                                    <td class="mobilehide">{{$alert->motive->name}}</td>
+
+                                    <td>
+                                        @role('atmcollector|atmadmin')
+                                        <a class="btn btn-sm btn-warning attendbutton text-white @php
+                                           if($alert->status_id==2) { echo e('disabled');} @endphp"
+                                           href="{{ URL::to('alerts/' . $alert->id.'/attend') }}"
+                                           data-toggle="tooltip" title="Attend">
+                                            {!! trans('alerts.buttons.attend') !!}
+                                        </a>
+                                        @endrole
+                                        <a class="btn btn-sm btn-success showbutton"
+                                           href="{{ URL::to('alerts/' . $alert->id) }}"
                                            data-toggle="tooltip" title="Show">
-                                            {!! trans('motives.buttons.show') !!}
+                                            {!! trans('alerts.buttons.show') !!}
                                         </a>
                                         <a class="btn btn-sm btn-info editbutton"
-                                           href="{{ URL::to('motives/' . $motive->id . '/edit') }}"
+                                           href="{{ URL::to('alerts/' . $alert->id . '/edit') }}"
                                            data-toggle="tooltip" title="Edit">
-                                            {!! trans('motives.buttons.edit') !!}
+                                            {!! trans('alerts.buttons.edit') !!}
                                         </a>
+                                        @role('atmcollector|atmadmin')
+                                        <a class="btn btn-sm btn-dark rejectbutton"
+                                           href="{{ URL::to('alerts/' . $alert->id . '/reject') }}"
+                                           data-toggle="tooltip" title="Reject">
+                                            {!! trans('alerts.buttons.reject') !!}
+                                        </a>
+                                        @endrole
                                     </td>
                                 </tr>     
 
@@ -167,7 +206,7 @@
 @endsection
 
 @section('footer_scripts')
-@if ((count($motives) > config('atm_app.datatablesJsStartCount')) && config('atm_app.enabledDatatablesJs'))
+@if ((count($alerts) > config('atm_app.datatablesJsStartCount')) && config('atm_app.enabledDatatablesJs'))
 @include('scripts.datatables')
 @endif
 @include('scripts.delete-modal-script')
@@ -176,6 +215,6 @@
 @include('scripts.tooltips')
 @endif
 @if(config('atm_app.enableSearch'))
-@include('scripts.search-motives')
+@include('scripts.search-alerts')
 @endif
 @endsection

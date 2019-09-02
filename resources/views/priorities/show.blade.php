@@ -3,16 +3,21 @@
 @section('content')
 <div class="container">    
     <div class="row justify-content-center">
-        <div class="col-md-12">
+        <div class="col-md-10">
             <div class="card">
-                <div class="card-header"><a class="nav-link" href="{{url('/home') }}">Menu</a>
-                <h5 class="text-right">
-                            <a style="color: red; font-style: italic" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                   document.getElementById('disable-form').submit();">                                                                    
-                                <i class="fas fa-minus-circle"></i>        
-                                {{ __('Eliminar') }}    
+                <div class="card-header text-white bg-success">
+                    <div class="row">                      
+                        <div class="col-6"><a class="nav-link text-white" href="{{url('/motives') }}">Motives</a>
+
+                        </div>
+                        <div class="col-6"><a href="{{url('/motives') }}" class="btn btn-light btn-sm float-right"
+                                              data-toggle="tooltip" data-placement="left"
+                                              title="{{ trans('signalsinventory.tooltips.back-users') }}">
+                                <i class="fa fa-fw fa-reply-all" aria-hidden="true"></i>
+                                {!! trans('motives.buttons.back-to-motives') !!}
                             </a>
-                        </h5>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body">
@@ -22,31 +27,45 @@
                     </div>
                     @endif
                     <div class="row">
-                    
-                    <form id="disable-form" action="{{ url('/motives/'.$motive->id )}}" method="POST" style="display: none;">
-                        {{method_field('DELETE')}}
-                        @csrf
-                    </form>
+                        <div class="col-lg-10 offset-lg-1">
 
-                    <ul>
-                                        <li class="list-group-item ">
-                                            
-                                                <h2><i id="map" class="fas fa-map-marked-alt"></i></h2>
-                                                <h6>Nombre</h6>
-                                           
-                                            <span class="text-muted"><button type="button" class="btn btn-sm btn-outline-secondary">{{$motive->name}}</button></span>
-                                        </li>
-                                        <li class="list-group-item ">
-                                            
-                                                <h2><i id="map" class="fas fa-map-marked-alt"></i></h2>
-                                                <h6>Created At</h6>
-                                            
-                                            <span class="text-muted"><button type="button" class="btn btn-sm btn-outline-secondary">{{$motive->created_at}}</button></span>
-                                        </li>
-                                        
-                                       
-                                        
-                                    </ul>              
+                            <div class="card">
+
+                                <div class="col-6">
+                                    <span class="text-muted">Nombre<button type="button" class="btn btn-sm btn-outline-secondary">{{$motive->name}}</button></span>
+                                    <br/>
+                                </div>
+                                <div class="col-6">
+                                    <br/>
+                                    <span class="text-muted">Descripcion<button type="button" class="btn btn-sm btn-outline-secondary">{{$motive->created_at}}</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <div class="border-bottom"></div>
+
+                    <br/>
+                    <div class="row">
+                        <div class="col-6">
+                            <a class="btn btn-sm btn-success" href="{{ URL::to('/alerts/create') }}"><i class="fa fa-plus-square"></i> Nueva Alerta</a>
+                        </div>
+                        <div class="col-6">
+                            <div class="btn-group float-right" role="group">
+                                <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Continuar a...
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <a class="dropdown-item btn btn-sm" href="{{ URL::to('/statuses') }}"><i class="fa fa-plus-square"></i>Estados</a>                                    
+                                    @role('atmadmin')
+                                    <a class="dropdown-item btn btn-sm" href="{{ URL::to('/statuses/create') }}"><i class="fa fa-plus-square"></i> Nueva Estado</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item btn btn-sm" href="{{ URL::to('/motives/create') }}"><i class="fa fa-plus-square"></i> Nuevo Motivos</a>
+                                    @endrole
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
