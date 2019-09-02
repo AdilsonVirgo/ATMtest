@@ -23,7 +23,6 @@ class CreateAlertsTable extends Migration {
             $table->unsignedBigInteger('device_id')->nullable();
             $table->boolean('completed')->default(false);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

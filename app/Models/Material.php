@@ -11,7 +11,9 @@ class Material extends Eloquent {
     use SoftDeletes;
 
     protected $table = 'materials';
-    protected $fillable = ['erp_code', 'name', 'quantity', 'origen'];
+    protected $fillable = [
+        'erp_code', 'name', 'quantity', 'origen','report_id'
+    ];
 
     public function report() {
         return $this->belongsToMany(Report::class)->withTimestamps();

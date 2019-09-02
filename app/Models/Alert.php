@@ -12,9 +12,6 @@ use App\Models\Motive;
 
 class Alert extends Eloquent
 {
-    use SoftDeletes;
-
-
     protected $table = 'alerts';
     protected $fillable = ['place', 'user_id', 'priority_id', 'status_id', 'motive_id', 'description','device_id','completed'];
     protected $casts = ['user_id' => 'int', 'priority_id' => 'int', 'status_id' => 'int', 'motive_id' => 'int'];

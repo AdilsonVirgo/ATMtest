@@ -205,3 +205,7 @@ Route::post('search-motives', 'MotiveController@search')->name('search-motives')
 Route::post('search-alerts', 'VerticalSignalController@search')->name('search-alerts');
 Route::post('search-reportes', 'VerticalSignalController@search')->name('search-reportes');
 
+Route::resource('/stock', 'StockController');
+Route::get('createorder/{id}', 'WorkOrderController@createorder');
+Route::get('materialsedit/{id}', 'WorkOrderController@materialsedit')->name('materialsedit');
+Route::get('pdf/{id}', 'WorkOrderController@pdf')->name('pdf');

@@ -12,12 +12,11 @@ use App\Models\Alert;
 
 class Report extends Eloquent {
 
-    use SoftDeletes;
 
     protected $table = 'reports';
     protected $fillable = [
         'user_id ', 'alert_id', 'status_id',
-        'device_id', 'assign_id', 'material_id', 'description', 'completed'
+        'device_id', 'assign_id', 'description', 'completed'
     ];
 
     public function user() {
@@ -29,6 +28,10 @@ class Report extends Eloquent {
     }
     public function materials() {
         return $this->belongsToMany(Material::class)->withTimestamps();//material_report
+    }
+    public function workorder()
+    {
+        return $this->hasOne('App\Models\WorkOrder');
     }
 /*
      public function status() {

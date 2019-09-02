@@ -19,7 +19,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            {!! trans('workorders.create-new-workorder') !!}
+                            {!! trans('workorders.editing-workorder') !!}
                             <div class="pull-right">
                                 <a href="{{ route('workorders.index') }}" class="btn btn-light btn-sm float-right"
                                    data-toggle="tooltip" data-placement="left"
@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="card-body">
-                        {!! Form::open(array('route' => 'workorders.store', 'method' => 'POST', 'role' => 'form', 'class' => 'needs-validation')) !!}
+                        {!! Form::open(array('route' => ['workorders.update', $workOrder->id], 'role' => 'form')) !!}
 
                         {!! csrf_field() !!}
 
@@ -45,9 +45,15 @@
                                         @foreach($users as $user)
                                             @foreach ($user->roles as $user_role)
                                                 @if ($user_role->name == 'ATM Operator')
-                                                    <option value="{{ $user->id }}">
-                                                        {{ $user->name }}
-                                                    </option>
+                                                    @if($user->id == $workOrder->user_id)
+                                                        <option value="{{ $user->id }}" selected="{{ $user->id }}">
+                                                            {{ $user->name }}
+                                                        </option>
+                                                    @else
+                                                        <option value="{{ $user->id }}">
+                                                            {{ $user->name }}
+                                                        </option>                                                    
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         @endforeach
@@ -72,7 +78,7 @@
                             {!! Form::label('report_id', trans('forms.create_workorder_label_reportId'), array('class' => 'col-md-3 control-label')); !!}
                             <div class="col-md-9">
                                 <div class="input-group">
-                                    {!! Form::text('report_id', $report->id , array('id' => 'report_id', 'class' => 'form-control', 'readonly' => 'readonly', 'placeholder' => trans('forms.create_workorder_ph_reportId'))) !!}
+                                    {!! Form::text('report_id', $workOrder->report_id , array('id' => 'report_id', 'class' => 'form-control', 'readonly' => 'readonly', 'placeholder' => trans('forms.create_workorder_ph_reportId'))) !!}
                                     <div class="input-group-append">
                                         <label for="report_id" class="input-group-text">
                                             <i class="fa fa-fw {{ trans('forms.create_workorder_icon_reportId') }}"
@@ -93,7 +99,7 @@
                             <div class="col-md-9">
                                 <div class="input-group">
                                     
-                                    {!! Form::date('start_date', now(), array('id' => 'start_date', 'class' => 'form-control', 'placeholder' => trans('forms.create_workorder_ph_startdate'))) !!}
+                                    {!! Form::date('start_date', $workOrder->start_date, array('id' => 'start_date', 'class' => 'form-control', 'placeholder' => trans('forms.create_workorder_ph_startdate'))) !!}
                                     <div class="input-group-append">
                                         <label for="start_date" class="input-group-text">
                                             <i class="fa fa-fw {{ trans('forms.create_workorder_icon_startdate') }}"
@@ -148,11 +154,10 @@
                                                                 <td>ALMACEN</td>
                                                             @endif
                                                             <td>
-                                                                <a class="btn btn-sm btn-info btn-block"
-                                                                   href="{{ URL::to('intersections/' . $materials->id . '/edit') }}"
-                                                                   data-toggle="tooltip" title="Editar">
-                                                                    {!! trans('workorders.buttons.edit') !!}
-                                                                </a>
+                                                                {!! Form::open(array('url' => 'workorders/' . $materials->id . '/edit', 'class' => '', 'data-toggle' => 'tooltip', 'title' => 'Cerrar')) !!}
+                                                                {!! Form::hidden('_method', 'PUT') !!}
+                                                                {!! Form::button(trans('workorders.buttons.edit_materials'), array('class' => 'btn btn-danger btn-sm','type' => 'button', 'style' =>'width: 100%;' ,'data-toggle' => 'modal', 'data-target' => '#editmaterial', 'data-title' => 'Editar el Origen del Material', 'data-message' => '')) !!}
+                                                                {!! Form::close() !!}
                                                             </td>
                                                         </tr>
                                                     @endforeach
@@ -167,7 +172,7 @@
                             </div>
                         </div>                      
 
-                        {!! Form::button(trans('workorders.create-new-material'), array('class' => 'btn btn-success margin-bottom-1 mb-1 float-right','type' => 'submit' )) !!}
+                        {!! Form::button(trans('workorders.save-edit-workorder'), array('class' => 'btn btn-success margin-bottom-1 mb-1 float-right','type' => 'submit' )) !!}
                         {!! Form::close() !!}
                     </div>
 
@@ -176,10 +181,15 @@
         </div>
     </div>
 
+    @include('modals.modal-edit-material')
+    
 @endsection
 
 @section('footer_scripts')
     @if(config('settings.googleMapsAPIStatus'))
         @include('scripts.google-maps-atm-create')
     @endif
+    
+    @include('scripts.edit-modal-script')
 @endsection
+
