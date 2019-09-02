@@ -174,10 +174,10 @@
                                     </td>
                                     <td class="mobilehide">{{$reporte->description}}</td>
                                     <td>
-                                        @role('atmcollector|atmadmin')
+                                        @role('atmoperator|atmadmin')
                                         <a class="btn btn-sm btn-warning attendbutton text-white"
-                                           href="{{ URL::to('reportes/' . $reporte->id.'/attend') }}"
-                                           data-toggle="tooltip" title="Attend">
+                                           href="{{ URL::to('createorder/' . $reporte->id) }}"
+                                           data-toggle="tooltip" title="Crear">
                                             {!! trans('reportes.buttons.attend') !!}
                                         </a>
                                         @endrole
