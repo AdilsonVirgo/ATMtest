@@ -2,25 +2,25 @@
 
 namespace App\Notifications;
 
-use App\Models\Alert;
+use App\Models\WorkOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class AlertNotificacion extends Notification
+class WorkOrderNotification extends Notification
 {
     use Queueable;
 
-    private $alert;
+    private $workorder;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($alert)
+    public function __construct($workorder)
     {
-        $this->alert = $alert;
+        $this->workorder = $workorder;
     }
 
     /**
@@ -57,8 +57,8 @@ class AlertNotificacion extends Notification
     public function toArray($notifiable)
     {
         return [
-            'id' => $this->alert->id,
-            'place' => $this->alert->place
+            'id' => $this->workorder->id,
+            'owner' => $this->workorder->user_id
        
         ];
     }

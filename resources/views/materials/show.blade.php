@@ -57,13 +57,10 @@
                                         Continuar a...
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                         <a class="dropdown-item btn btn-sm" href="{{ URL::to('/motives') }}"><i class="fa fa-plus-square"></i>Motivos</a>                                    
-                                    @role('atmadmin')
-                                    <a class="dropdown-item btn btn-sm" href="{{ URL::to('/motives/create') }}"><i class="fa fa-plus-square"></i> Nueva Motivos</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item btn btn-sm" href="{{ URL::to('/priorities/create') }}"><i class="fa fa-plus-square"></i> Nuevo Prioridad</a>
-                                    @endrole
-                                    </div>
+                                        <a class="dropdown-item btn btn-sm" href="{{ URL::to('/statuses/create') }}"><i class="fa fa-plus-square"></i> Nueva Estado</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item btn btn-sm" href="{{ URL::to('/statuses/create') }}"><i class="fa fa-plus-square"></i> Nuevo Prioridad</a>
+                                         </div>
                                 </div>
                             </div>
                         </div>

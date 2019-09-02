@@ -5,17 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Status;
 
-class StatusController extends Controller
-{
-     /**
+class StatusController extends Controller {
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
+        $pagintaionEnabled = config('atm_app.enablePagination');
         $statuses = Status::all();
-        return view('statuses.index',compact($statuses,'statuses'));
+        $statusestotal = Status::count();
+        return View('statuses.home', compact('statuses', 'statusestotal'));
     }
 
     /**
@@ -23,10 +24,9 @@ class StatusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         $statuses = Status::all();
-        return view('statuses.create',compact($statuses,'statuses'));
+        return view('statuses.create', compact($statuses, 'statuses'));
     }
 
     /**
@@ -35,17 +35,16 @@ class StatusController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $attributes = $request->validate([
-            'name' => ['required', 'unique:statuses']          
-            ]);
-            $retorno = tap(new Status($attributes))->save();
-            if ($retorno) {
+            'name' => ['required', 'unique:statuses']
+        ]);
+        $retorno = tap(new Status($attributes))->save();
+        if ($retorno) {
             return redirect()->to(url('/statuses'))->with('status', 'Inserted');
-            } else {
+        } else {
             return redirect()->to(url('/statuses'))->with('status', 'No Inserted');
-            } 
+        }
     }
 
     /**
@@ -54,10 +53,9 @@ class StatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         $status = Status::findOrFail($id);
-        return view('statuses.show',compact($status,'status'));
+        return view('statuses.show', compact($status, 'status'));
     }
 
     /**
@@ -66,10 +64,9 @@ class StatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $status = Status::findOrFail($id);
-        return view('statuses.edit',compact($status,'status'));
+        return view('statuses.edit', compact($status, 'status'));
     }
 
     /**
@@ -79,20 +76,19 @@ class StatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $attributes = $request->validate(
-            [
-                'name' => ['required'],
-    ]);
-    $retorno = \DB::table('statuses')
-            ->where('id', $id)
-            ->update($attributes);
-    if ($retorno) {
-        return redirect()->to(url('/statuses'))->with('status', '-' . __('updated'));
-    } else {
-        return redirect()->to(url('/statuses'))->with('status', '-' . __('nope'));
-    }
+                [
+                    'name' => ['required'],
+        ]);
+        $retorno = \DB::table('statuses')
+                ->where('id', $id)
+                ->update($attributes);
+        if ($retorno) {
+            return redirect()->to(url('/statuses'))->with('status', '-' . __('updated'));
+        } else {
+            return redirect()->to(url('/statuses'))->with('status', '-' . __('nope'));
+        }
     }
 
     /**
@@ -101,15 +97,15 @@ class StatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $retorno = \DB::table('statuss')
-        ->where('id', $id)
-        ->update(['activa' => 0]);
-if ($retorno) {
-    return redirect()->to(url('/statuses'))->with('status', '-' . __('Desactivada'));
-} else {
-    return redirect()->to(url('/statuses'))->with('status', '-' . __('Ya habia sido desactivada'));
-}
+                ->where('id', $id)
+                ->update(['activa' => 0]);
+        if ($retorno) {
+            return redirect()->to(url('/statuses'))->with('status', '-' . __('Desactivada'));
+        } else {
+            return redirect()->to(url('/statuses'))->with('status', '-' . __('Ya habia sido desactivada'));
+        }
     }
+
 }

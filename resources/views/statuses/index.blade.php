@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header"><a class="nav-link" href="{{url('/home') }}">Menu</a>
                     <div class="row">                      
-                        <div class="col-sm-3"><a class="nav-link" href="{{url('/statuses/create') }}">StatusCreate</a></div>
+                        <div class="col-sm-3"><a class="nav-link" href="{{url('/motives/create') }}">MotivesCreate</a></div>
                     </div>
                 </div>
 
@@ -19,9 +19,9 @@
                     @endif
                     <div class="row">
                     <ul>
-                        @foreach ($statuses as $provincia)
+                        @foreach ($motives as $provincia)
                             <li>
-                                <a style="color: red;" href="{{url('/statuses/'.$provincia->id) }}">
+                                <a style="color: red;" href="{{url('/motives/'.$provincia->id) }}">
                                     {{$provincia->name}}
                                 </a>
                             </li>                                               

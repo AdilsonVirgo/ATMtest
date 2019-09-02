@@ -55,6 +55,8 @@ return [
     'motivesList'      => 'Listado de motivos',
     'priorityList'      => 'Listado de prioridades',
     'statusList'      => 'Listado de estados',
+    'reportsList'      => 'Listado de reportes',
+    'materialsList'      => 'Listado de materiales',
     'verticial-signals'      => 'Señales verticales',
     'intersections'     => 'Intersecciones',
     'traffic-poles'     => 'Listado de postes de tráfico',

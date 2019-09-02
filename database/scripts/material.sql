@@ -1,0 +1,5 @@
+INSERT INTO `materials` (`id`, `erp_code`, `name`,`quantity`,`origen`, `created_at`, `updated_at`,`deleted_at`) VALUES (1, 'ee1-01-rpg','bombillo',10 ,1,'2019-09-01 22:16:57','2019-09-01 22:16:58', NULL);
+ INSERT INTO `materials` (`id`, `erp_code`, `name`,`quantity`,`origen`, `created_at`, `updated_at`,`deleted_at`) VALUES (2, 'ee1-02-rpg','tuerca',80 ,1,'2019-09-01 22:16:57','2019-09-01 22:16:58', NULL);
+ INSERT INTO `materials` (`id`, `erp_code`, `name`,`quantity`,`origen`, `created_at`, `updated_at`,`deleted_at`) VALUES (3, 'ee1-03-rpg','tubo',4 ,0,'2019-09-01 22:16:57','2019-09-01 22:16:58', NULL);
+ INSERT INTO `materials` (`id`, `erp_code`, `name`,`quantity`,`origen`, `created_at`, `updated_at`,`deleted_at`) VALUES (4, 'ee1-04-rpg','brazo_mecanico',2 ,0,'2019-09-01 22:16:57','2019-09-01 22:16:58', NULL);
+ INSERT INTO `materials` (`id`, `erp_code`, `name`,`quantity`,`origen`, `created_at`, `updated_at`,`deleted_at`) VALUES (5, 'ee1-05-rpg','socket',14 ,1,'2019-09-01 22:16:57','2019-09-01 22:16:58', NULL);

@@ -8,8 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
 
-class User extends Authenticatable
-{
+class User extends Authenticatable {
+
     use HasRoleAndPermission;
     use Notifiable;
     use SoftDeletes;
@@ -60,13 +60,11 @@ class User extends Authenticatable
         'activated',
         'token',
     ];
-
     protected $dates = [
         'deleted_at',
     ];
 
-    public function full_name()
-    {
+    public function full_name() {
         return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
     }
 
@@ -75,8 +73,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    public function social()
-    {
+    public function social() {
         return $this->hasMany('App\Models\Social');
     }
 
@@ -85,20 +82,17 @@ class User extends Authenticatable
      *
      * @var array
      */
-    public function profile()
-    {
+    public function profile() {
         return $this->hasOne('App\Models\Profile');
     }
 
     // User Profile Setup - SHould move these to a trait or interface...
 
-    public function profiles()
-    {
+    public function profiles() {
         return $this->belongsToMany('App\Models\Profile')->withTimestamps();
     }
 
-    public function hasProfile($name)
-    {
+    public function hasProfile($name) {
         foreach ($this->profiles as $profile) {
             if ($profile->name == $name) {
                 return true;
@@ -108,26 +102,28 @@ class User extends Authenticatable
         return false;
     }
 
-    public function assignProfile($profile)
-    {
+    public function assignProfile($profile) {
         return $this->profiles()->attach($profile);
     }
 
-    public function removeProfile($profile)
-    {
+    public function removeProfile($profile) {
         return $this->profiles()->detach($profile);
     }
 
-    public function vertical_signals()
-    {
+    public function vertical_signals() {
         return $this->hasMany(VerticalSignal::class, 'user_id');
     }
-    public function work_orders()
-    {
+
+    public function work_orders() {
         return $this->hasMany(WorkOrder::class, 'user_id');
     }
-	public function alerts()
-    {
+
+    public function alerts() {
         return $this->hasMany(Alert::class, 'user_id');
     }
+
+    public function reports() {
+        return $this->hasMany(Alert::class, 'user_id');
+    }
+
 }
