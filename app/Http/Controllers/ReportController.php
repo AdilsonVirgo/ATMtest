@@ -34,6 +34,8 @@ class ReportController extends Controller {
 
     public function index() {
 
+       /* $r = Report::first();
+        dd($r->materials()->first()->name);*/
         $reportes = Report::all();
         $users = User::all();
         $alerts = Alert::all();
@@ -51,7 +53,6 @@ class ReportController extends Controller {
      */
     public function create() {
         $reportes = Report::all();
-        
         $user = auth()->user();
         $users = User::all();
         $alert = Alert::first();
@@ -62,7 +63,7 @@ class ReportController extends Controller {
         $filtered = $users->reject(function ($item, $key) {
             return $item->getRoles()[0]->level <> 2;
         });
-        $collectors = $filtered->all();    
+        $collectors = $filtered->all();
         return view('reportes.create', compact('reportes', 'user', 'alert', 'statuses', 'devices', 'collectors', 'materials', 'reportestotal'));
     }
 
@@ -73,30 +74,26 @@ class ReportController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        /* dd( auth()->user()->getRoles()[0]->level);//level 4
-          dd( auth()->user()->getRoles()[0]->name);//del user lo necesito todo
-          dd( auth()->user()->getRoles());//del user lo necesito todo
-          dd( auth()->user()->id);//del user lo necesito todo
-         * dd($pendiente_id->id); */
         $pendiente_id = DB::table('statuses')->where('name', 'pendiente')->first();
 
-        $alertaux = new Alert();
-        $alertaux->place = $request->get('place');
+        $alertaux = new Report();
         $alertaux->user_id = auth()->user()->id;
-        $alertaux->priority_id = $request->get('priority_id');
-        $alertaux->status_id = $pendiente_id->id; //el id no el nombre  1-pendiente2-atendido3-desetimado cuando pase por 2,llenar el completed
-        $alertaux->motive_id = $request->get('motive_id');
+        $alertaux->alert_id = $request->get('alert_id');
+        $alertaux->status_id = $pendiente_id->id;
+        $alertaux->device_id = $request->get('device_id');
+        $alertaux->assign_id = $request->get('assign_id');
         $alertaux->description = $request->get('description');
-        $retorno = $alertaux->save();
-        //notificar a todo el mundo
+        $retorno = $alertaux->save();       //notificar a todo al asignado
         $users = User::all();
         foreach ($users as $user) {
-            $user->notify(new \App\Notifications\AlertNotificacion($alertaux));
+            if ($user->id == $alertaux->assign_id) {
+                $user->notify(new \App\Notifications\ReporteNotificacion($alertaux));
+            }
         }
         if ($retorno) {
-            return redirect('alerts/' . $alertaux->id)->with('success', trans('alerts.createSuccess'));
+            return redirect('reports/' . $alertaux->id)->with('success', trans('reportes.createSuccess'));
         }
-        return back()->with('error', trans('Error creando la alerta. Inténtelo de nuevo o contacte al administrador.'));
+        return back()->with('error', trans('Error creando el reporte. Inténtelo de nuevo o contacte al administrador.'));
     }
 
     /**

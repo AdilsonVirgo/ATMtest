@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\DevicesInventory;
 use App\Models\Alert;
 use App\Models\Motive;
 use App\Models\Status;
@@ -43,10 +43,11 @@ class AlertController extends Controller {
      */
     public function create() {
         $alerts = Alert::all();
+        $devices = DevicesInventory::all();
         $priorities = Priority::all();
         $motives = Motive::all();
         $statuses = Status::all();
-        return view('alerts.create', compact('alerts', 'priorities', 'statuses', 'motives'));
+        return view('alerts.create', compact('alerts', 'priorities', 'statuses', 'motives','devices'));
     }
 
     /**
@@ -56,6 +57,7 @@ class AlertController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
+       // dd($request);//back verification device_id if collector
         $pendiente_id = DB::table('statuses')->where('name', 'pendiente')->first();
 
         $alertaux = new Alert();
@@ -66,10 +68,23 @@ class AlertController extends Controller {
         $alertaux->motive_id = $request->get('motive_id');
         $alertaux->description = $request->get('description');
         $retorno = $alertaux->save();
-        //notificar a todo el mundo notificacion grupal
-        $users = User::all();
-        foreach ($users as $user) {
-            $user->notify(new \App\Notifications\AlertNotificacion($alertaux));
+        if (auth()->user()->getRoles()[0]->level == 2) {
+            //cambiar el pendiente de la alertas
+            $aux = new Report();
+            $aux->user_id = auth()->user()->id;
+            $aux->alert_id = $alertaux->id;
+            $aux->status_id = $pendiente_id->id; 
+            $aux->device_id = $request->get('device_id');
+            $aux->assign_id = auth()->user()->id;
+            $aux->description = $alertaux->description;
+            $rep = $aux->save();    
+            //dd($aux); 
+        } else {
+            //notificar a todo el mundo notificacion grupal
+            $users = User::all();
+            foreach ($users as $user) {
+                $user->notify(new \App\Notifications\AlertNotificacion($alertaux));
+            }
         }
         if ($retorno) {
             return redirect('alerts/' . $alertaux->id)->with('success', trans('alerts.createSuccess'));

@@ -27,17 +27,17 @@ class Report extends Eloquent {
         return $this->belongsTo(Alert::class);
     }
     public function materials() {
-        return $this->belongsToMany(Material::class)->withTimestamps();//material_report
+        return $this->HasMany(Material::class);
     }
     public function workorder()
     {
         return $this->hasOne('App\Models\WorkOrder');
     }
-/*
+
      public function status() {
         return $this->belongsTo(Status::class);
     }
-
+/*
     public function device() {
         return $this->hasOne(DevicesInventory::class);
     }

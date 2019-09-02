@@ -18,7 +18,7 @@ class CreateMaterialsTable extends Migration
             $table->string('erp_code', 50)->nullable();
             $table->string('name');   
             $table->integer('quantity');        
-            $table->unsignedBigInteger('report_id')->references('id')->on('reports');
+            $table->unsignedBigInteger('report_id')->references('id')->on('reports')->nullable();
             $table->boolean('origen')->default(true);     //1-stock(predefinido) o false- almacen         
             $table->timestamps();
         });
