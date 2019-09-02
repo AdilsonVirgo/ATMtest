@@ -166,7 +166,12 @@
                                     <td class="mobilehide">{{$reporte->status->name}}</td>
                                     <td class="mobilehide">{{$reporte->device_id}}</td>
                                     <td class="mobilehide">{{$reporte->assign_id}}</td>
-                                    <td class="mobilehide">{{$reporte->material_id}}</td>
+                                    <td class="mobilehide">
+                                        @foreach($reporte->materials()->get() as $m)
+                                        -{{$m->name}}
+                                        @endforeach
+                                        
+                                    </td>
                                     <td class="mobilehide">{{$reporte->description}}</td>
                                     <td>
                                         @role('atmcollector|atmadmin')

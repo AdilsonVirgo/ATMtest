@@ -8,7 +8,6 @@ use App\Models\Report;
 
 class Material extends Eloquent {
 
-    use SoftDeletes;
 
     protected $table = 'materials';
     protected $fillable = [
@@ -16,7 +15,7 @@ class Material extends Eloquent {
     ];
 
     public function report() {
-        return $this->belongsToMany(Report::class)->withTimestamps();
+        return $this->belongsTo(Report::class);
     }
 
     public static function rules($merge = []) {

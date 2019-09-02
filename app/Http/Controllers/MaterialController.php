@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Material;
+use App\Models\Report;
 use Illuminate\Http\Request;
 
 
@@ -26,8 +27,10 @@ class MaterialController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
+        
         $materials = Material::all();
-        return view('materials.create', compact($materials, 'materials'));
+        $reportes = Report::all();
+        return view('materials.create', compact('reportes', 'materials'));dd('hello');
     }
 
     /**
@@ -38,20 +41,18 @@ class MaterialController extends Controller {
      */
     public function store(Request $request) {
         $attributes = $request->validate([
+            'erp_code' => ['required'],
             'name' => ['required', 'unique:materials'],
-            'description' => []
+            'quantity' => ['required'],
+            'report_id' => ['required'],
+            'origen' => []
         ]);
         $newone = new Material($attributes);
         $retorno = tap($newone)->save();
-        //notificar a todos los usuarios
-        /* $users = \App\User::all();
-          foreach($users as $user){
-          $user->notify(new \App\Notifications\MaterialNotification($newone));
-          } */
         if ($retorno) {
             return redirect('materials/' . $newone->id)->with('success', trans('materials.createSuccess'));
         }
-        return back()->with('error', trans('Error creando el motivo. Inténtelo de nuevo o contacte al administrador.'));
+        return back()->with('error', trans('Error creando el material. Inténtelo de nuevo o contacte al administrador.'));
     }
 
     /**
